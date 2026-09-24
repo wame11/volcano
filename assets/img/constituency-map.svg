@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" role="img" aria-labelledby="t"><title id="t">Abstract map of constituencies drawn as coloured shapes</title>
+<rect width="1200" height="675" fill="#eef1ee"/>
+<g stroke="#f7f8f7" stroke-width="5" stroke-linejoin="round">
+<polygon points="120,120 300,90 340,220 220,300 110,250" fill="#5d7ea3"/>
+<polygon points="300,90 480,70 520,200 340,220" fill="#9db7d1"/>
+<polygon points="480,70 700,60 720,180 520,200" fill="#c7d6e3"/>
+<polygon points="700,60 900,80 880,220 720,180" fill="#5d7ea3"/>
+<polygon points="900,80 1080,120 1060,260 880,220" fill="#b2c8dc"/>
+<polygon points="110,250 220,300 260,420 150,460 80,360" fill="#c7d6e3"/>
+<polygon points="220,300 340,220 520,200 500,340 380,380 260,420" fill="#83a4c4"/>
+<polygon points="520,200 720,180 740,320 620,360 500,340" fill="#e2e9ef"/>
+<polygon points="720,180 880,220 1060,260 1000,380 840,400 740,320" fill="#9db7d1"/>
+<polygon points="150,460 260,420 380,380 400,520 300,600 180,570" fill="#83a4c4"/>
+<polygon points="380,380 500,340 620,360 640,500 520,560 400,520" fill="#5d7ea3"/>
+<polygon points="620,360 740,320 840,400 820,540 700,580 640,500" fill="#c7d6e3"/>
+<polygon points="840,400 1000,380 1100,480 1040,600 880,590 820,540" fill="#83a4c4"/>
+</g>
+<g fill="#8a1c2b"><circle cx="415" cy="290" r="9"/><circle cx="610" cy="460" r="9"/><circle cx="930" cy="300" r="9"/><circle cx="230" cy="500" r="9"/></g>
+<g font-family="Helvetica, Arial, sans-serif" font-size="20" fill="#1f3554" font-weight="700">
+<text x="150" y="640">■ One constituency = one MP</text>
+</g>
+<g font-family="Helvetica, Arial, sans-serif" font-size="16" fill="#3f5470">
+<text x="600" y="640">● Returning officer's count centre</text>
+</g>
+</svg>

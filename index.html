@@ -1,161 +1,73 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Volcanic Activity and Climate Change</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
-  </head>
-  <body>
-    <div class="heat-haze" aria-hidden="true"></div>
-    <header class="site-header">
-      <a class="brand" href="#top" aria-label="Volcanic Activity home">
-        <span class="brand-mark"></span>
-        Volcanic Activity
-      </a>
-      <nav aria-label="Page sections">
-        <a href="#what">What</a>
-        <a href="#how">How</a>
-        <a href="#climate">Climate</a>
-        <a href="#evidence">Evidence</a>
-      </nav>
-    </header>
-
-    <main id="top">
-      <section class="hero section-band">
-        <div class="ember-field" aria-hidden="true">
-          <span style="--x: 8%; --d: 0s; --s: 8px;"></span>
-          <span style="--x: 18%; --d: 1.6s; --s: 5px;"></span>
-          <span style="--x: 32%; --d: .7s; --s: 7px;"></span>
-          <span style="--x: 52%; --d: 2.3s; --s: 6px;"></span>
-          <span style="--x: 74%; --d: 1.1s; --s: 9px;"></span>
-          <span style="--x: 88%; --d: .2s; --s: 5px;"></span>
-        </div>
-        <div class="hero-media" aria-hidden="true">
-          <img src="https://www.nps.gov/subjects/volcanoes/images/havo-kilauea-2021-usgs.jpg?autorotate=false&maxwidth=1300" alt="">
-        </div>
-        <div class="hero-content reveal">
-          <p class="eyebrow">Natural causes of climate change</p>
-          <h1>Volcanoes can briefly cool the planet.</h1>
-          <p class="hero-copy">
-            Huge eruptions blast ash and sulfur dioxide high into the atmosphere.
-            That sulfur can become tiny reflective particles, blocking some sunlight
-            and causing short-term global cooling.
-          </p>
-          <div class="hero-actions">
-            <a class="button primary" href="#climate">See the climate effect</a>
-            <a class="button ghost" href="#evidence">View evidence</a>
-          </div>
-        </div>
-        <figure class="eruption-card reveal delay-1">
-          <img src="https://www.nps.gov/subjects/volcanoes/images/havo-kilauea-2021-usgs.jpg?autorotate=false&maxwidth=1300" alt="Orange lava fountain erupting from Kilauea volcano at night">
-          <figcaption>Kilauea shows the heat and force behind volcanic activity.</figcaption>
-        </figure>
-      </section>
-
-      <section id="what" class="content-grid section-band">
-        <div class="copy reveal">
-          <p class="eyebrow">1. What is it?</p>
-          <h2>Volcanic activity is Earth releasing pressure.</h2>
-          <p>
-            Volcanoes form where magma rises from inside Earth and escapes through
-            cracks, vents, or craters. Eruptions can release lava, ash, rocks, steam,
-            carbon dioxide, and sulfur gases.
-          </p>
-          <p>
-            They are natural climate influences, but they do not explain modern
-            long-term warming. Their biggest climate effect is usually temporary
-            cooling after very explosive eruptions.
-          </p>
-        </div>
-        <div class="fact-stack reveal delay-1" aria-label="Key volcano facts">
-          <article><strong>Magma</strong><span>Molten rock underground before it erupts.</span></article>
-          <article><strong>Lava</strong><span>Magma after it reaches the surface.</span></article>
-          <article><strong>Ash plume</strong><span>Fine rock and gases pushed upward by explosive force.</span></article>
-        </div>
-      </section>
-
-      <section id="how" class="section-band split-section">
-        <figure class="image-panel reveal">
-          <img src="https://www.nps.gov/subjects/volcanoes/images/Redoubt-Volcano-in-Lake-Clark-National-Park-2009_2.jpg?autorotate=false&maxwidth=1300" alt="A towering ash plume rising from Redoubt Volcano">
-          <figcaption>Explosive eruptions can send ash and gases high into the sky.</figcaption>
-        </figure>
-        <div class="copy reveal delay-1">
-          <p class="eyebrow">2. How does it work?</p>
-          <h2>Pressure builds, then the volcano vents.</h2>
-          <ol class="lava-steps">
-            <li><span>1</span> Magma rises because it is hot and less dense than solid rock.</li>
-            <li><span>2</span> Gas bubbles expand as pressure drops near the surface.</li>
-            <li><span>3</span> If pressure wins, ash, lava, and gases burst out.</li>
-            <li><span>4</span> Powerful eruptions can reach the stratosphere, where particles last longer.</li>
-          </ol>
-        </div>
-      </section>
-
-      <section id="climate" class="climate-section section-band">
-        <div class="copy center reveal">
-          <p class="eyebrow">3. How does it affect climate?</p>
-          <h2>Sulfur aerosols act like a temporary sunshade.</h2>
-          <p>
-            Sulfur dioxide from major eruptions reacts in the atmosphere to form
-            sulfate aerosols. These tiny droplets reflect sunlight back to space,
-            so Earth's surface can cool for months to a few years.
-          </p>
-        </div>
-        <div class="climate-grid">
-          <article class="metric reveal"><span class="count" data-target="20">0</span><small>million tons</small><p>Approximate sulfur dioxide released by Mount Pinatubo in 1991.</p></article>
-          <article class="metric reveal delay-1"><span class="count" data-target="0.5">0</span><small>degrees C</small><p>About how much global average temperature fell after Pinatubo.</p></article>
-          <article class="metric reveal delay-2"><span class="count" data-target="2">0</span><small>years</small><p>The cooling effect usually fades as aerosols fall out of the air.</p></article>
-        </div>
-        <figure class="wide-panel reveal">
-          <img src="https://d9-wret.s3.us-west-2.amazonaws.com/assets/palladium/production/s3fs-public/vhp_img3273.png" alt="Diagram showing volcanic gases reacting in the atmosphere">
-          <figcaption>Volcanic gases can react in different atmospheric layers, changing air quality and climate.</figcaption>
-        </figure>
-      </section>
-
-      <section id="evidence" class="section-band evidence-section">
-        <div class="copy reveal">
-          <p class="eyebrow">4. Evidence and examples</p>
-          <h2>The 1991 Mount Pinatubo eruption is the clearest example.</h2>
-          <p>
-            Satellites tracked a global aerosol cloud after Pinatubo erupted in the
-            Philippines. Scientists measured less incoming sunlight and a short dip
-            in global temperatures, matching the idea that volcanic aerosols cool
-            the planet temporarily.
-          </p>
-        </div>
-        <figure class="image-panel reveal delay-1">
-          <img src="https://assets.science.nasa.gov/dynamicimage/assets/science/esd/eo/images/imagerecords/1000/1510/sage_pinatubo.jpg?crop=faces%2Cfocalpoint&fit=clip&h=499&w=540" alt="NASA map of aerosols spreading around the globe after Mount Pinatubo">
-          <figcaption>NASA satellite data shows the Pinatubo aerosol cloud spreading around Earth.</figcaption>
-        </figure>
-      </section>
-
-      <section class="importance section-band">
-        <div class="importance-card reveal">
-          <p class="eyebrow">5. Importance</p>
-          <h2>Volcanoes matter, but they are not the main cause of today's warming.</h2>
-          <p>
-            Volcanic eruptions help scientists understand natural climate swings.
-            They can cool Earth briefly, damage air quality, and affect flights and
-            farming. However, their effect is short-lived compared with the long-term
-            warming caused by human greenhouse gas emissions.
-          </p>
-          <div class="takeaway"><strong>Quick takeaway:</strong><span>Volcanoes can change climate fast, but only for a short time.</span></div>
-        </div>
-      </section>
-    </main>
-
-    <footer class="site-footer">
-      <p>Sources:
-        <a href="https://www.nps.gov/subjects/volcanoes/volcanic-processes.htm">National Park Service</a>,
-        <a href="https://www.usgs.gov/programs/VHP/volcanoes-can-affect-climate">USGS</a>,
-        <a href="https://earthobservatory.nasa.gov/images/1510/global-effects-of-mount-pinatubo">NASA Earth Observatory</a>.
-      </p>
-    </footer>
-
-    <script src="script.js"></script>
-  </body>
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Civic Ledger | Plain-English guides to British democracy</title>
+<meta name="description" content="Plain-English guides to how British elections and Parliament work, written for readers who want the facts without the spin.">
+<meta property="og:title" content="The Civic Ledger">
+<meta property="og:description" content="Plain-English guides to how British elections and Parliament work, written for readers who want the facts without the spin.">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="./assets/css/site.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%238a1c2b'/%3E%3Ctext x='16' y='22' text-anchor='middle' font-family='Georgia' font-size='18' font-weight='700' fill='white'%3ECL%3C/text%3E%3C/svg%3E">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="top">
+  <div class="wrap">
+    <div class="top-bar"><span>Independent explainers on how British democracy works</span><button class="theme-btn" type="button" aria-pressed="false">Dark mode</button></div>
+    <div class="masthead"><a class="logo" href="./index.html">The Civic <span>Ledger</span></a><p class="tag">Plain-English guides to British democracy</p></div>
+  </div>
+  <nav class="nav" aria-label="Main"><div class="wrap"><ul>
+    <li><a href="./index.html">Home</a></li>
+    <li><a href="./articles/how-a-uk-general-election-works.html">Elections</a></li>
+    <li><a href="./articles/constituencies-mps-and-the-house-of-commons.html">Parliament</a></li>
+    <li><a href="./articles/what-happens-on-polling-day.html">Voting</a></li>
+    <li><a href="./index.html#about">About</a></li>
+  </ul></div></nav>
+</header>
+<main id="main">
+<div class="wrap">
+  <section class="hero">
+    <div class="lead"><span class="kicker">Start here</span><h2><a href="articles/how-a-uk-general-election-works.html" style="color:inherit">How a UK General Election Works, Step by Step</a></h2><p>From the moment Parliament is dissolved to the first Prime Minister’s Questions of a new term, here is the full sequence of events that turns a nation’s votes into a government.</p><div class="meta"><b>Eleanor Whitcombe</b><span>12 March 2026</span><span>Elections</span></div><p><a class="btn" href="articles/how-a-uk-general-election-works.html" style="display:inline-block;text-decoration:none">Read the explainer</a></p></div>
+    <figure><a href="articles/how-a-uk-general-election-works.html"><img src="assets/img/counting-hall.svg" alt="Illustration of a counting hall" width="1200" height="675"></a></figure>
+  </section>
+  <div class="section-head"><h2>Latest explainers</h2><a href="#all">All articles</a></div>
+  <div class="cards" id="all"><article class="card"><figure><a href="./articles/first-past-the-post-explained.html"><img src="./assets/img/constituency-map.svg" alt="" loading="lazy" width="1200" height="675"></a></figure><div class="body"><span class="kicker">Voting</span><h3><a href="./articles/first-past-the-post-explained.html">First Past the Post Explained</a></h3><p>The UK elects its MPs with one of the simplest voting systems in the world. Simplicity, though, comes with consequences that shape everything from safe seats to tactical voting.</p><div class="meta"><b>Tom Aldridge</b><span>19 March 2026</span></div></div></article><article class="card"><figure><a href="./articles/what-happens-on-polling-day.html"><img src="./assets/img/polling-station.svg" alt="" loading="lazy" width="1200" height="675"></a></figure><div class="body"><span class="kicker">Voting</span><h3><a href="./articles/what-happens-on-polling-day.html">What Happens on Polling Day</a></h3><p>Polling stations open at seven in the morning and close at ten at night. Between those hours a carefully choreographed process unfolds in church halls, schools and community centres across the country.</p><div class="meta"><b>Priya Raman</b><span>2 April 2026</span></div></div></article><article class="card"><figure><a href="./articles/constituencies-mps-and-the-house-of-commons.html"><img src="./assets/img/parliament.svg" alt="" loading="lazy" width="1200" height="675"></a></figure><div class="body"><span class="kicker">Parliament</span><h3><a href="./articles/constituencies-mps-and-the-house-of-commons.html">Constituencies, MPs and the House of Commons</a></h3><p>There are 650 of them, each with its own boundary, its own returning officer and its own single MP. Understanding constituencies is the key to understanding how Parliament is built.</p><div class="meta"><b>Callum Ferris</b><span>16 April 2026</span></div></div></article></div>
+  <div class="cards" style="margin-top:24px"><article class="card"><figure><a href="./articles/how-a-government-is-formed.html"><img src="./assets/img/westminster-doors.svg" alt="" loading="lazy" width="1200" height="675"></a></figure><div class="body"><span class="kicker">Parliament</span><h3><a href="./articles/how-a-government-is-formed.html">How a Government Is Formed After the Votes Are Counted</a></h3><p>Winning the most seats is only the start. The transfer of power in Britain depends on conventions, a short conversation with the King and, sometimes, weeks of negotiation.</p><div class="meta"><b>Hannah Okafor</b><span>30 April 2026</span></div></div></article><article class="card"><figure><a href="./articles/devolved-elections-scotland-wales-northern-ireland.html"><img src="./assets/img/devolved.svg" alt="" loading="lazy" width="1200" height="675"></a></figure><div class="body"><span class="kicker">Elections</span><h3><a href="./articles/devolved-elections-scotland-wales-northern-ireland.html">Devolved Elections: Scotland, Wales and Northern Ireland</a></h3><p>The three devolved legislatures are elected on different days, with different ballot papers and different counting rules from Westminster. Here is how each one works.</p><div class="meta"><b>Daniel Marsh</b><span>14 May 2026</span></div></div></article><article class="card"><figure><a href="./articles/how-a-uk-general-election-works.html"><img src="./assets/img/ballot-box.svg" alt="" loading="lazy" width="1200" height="675"></a></figure><div class="body"><span class="kicker">Elections</span><h3><a href="./articles/how-a-uk-general-election-works.html">How a UK General Election Works, Step by Step</a></h3><p>From the moment Parliament is dissolved to the first Prime Minister’s Questions of a new term, here is the full sequence of events that turns a nation’s votes into a government.</p><div class="meta"><b>Eleanor Whitcombe</b><span>12 March 2026</span></div></div></article></div>
+  <div class="two-col">
+    <section id="about">
+      <div class="section-head"><h2>About The Civic Ledger</h2></div>
+      <p>The Civic Ledger publishes plain-English explainers about how British democracy works: how elections are run, how Parliament is put together and how governments are formed. We write for people who want to understand the rules rather than be told what to think about them.</p>
+      <p>Every article is checked against primary sources, including the Electoral Commission, the House of Commons Library and the legislation itself. Where a rule is changing, or is disputed, we say so. We are not affiliated with any political party, campaign group or public body, and we do not endorse candidates.</p>
+      <p>Spotted an error? We publish corrections openly. Write to us at <a href="index.html#about">corrections@civicledger.example</a> and we will look into it.</p>
+      <h3 style="margin-top:28px">Reading order</h3>
+      <ol class="explainer-list">
+        <li><span class="n">1</span><div><a href="articles/how-a-uk-general-election-works.html">How a UK General Election Works, Step by Step</a><small>Elections &middot; Eleanor Whitcombe</small></div></li><li><span class="n">2</span><div><a href="articles/first-past-the-post-explained.html">First Past the Post Explained</a><small>Voting &middot; Tom Aldridge</small></div></li><li><span class="n">3</span><div><a href="articles/what-happens-on-polling-day.html">What Happens on Polling Day</a><small>Voting &middot; Priya Raman</small></div></li><li><span class="n">4</span><div><a href="articles/constituencies-mps-and-the-house-of-commons.html">Constituencies, MPs and the House of Commons</a><small>Parliament &middot; Callum Ferris</small></div></li><li><span class="n">5</span><div><a href="articles/how-a-government-is-formed.html">How a Government Is Formed After the Votes Are Counted</a><small>Parliament &middot; Hannah Okafor</small></div></li><li><span class="n">6</span><div><a href="articles/devolved-elections-scotland-wales-northern-ireland.html">Devolved Elections: Scotland, Wales and Northern Ireland</a><small>Elections &middot; Daniel Marsh</small></div></li>
+      </ol>
+    </section>
+    <aside>
+      <div class="side-box"><h3>Most read this month</h3><ol><li><a href="articles/what-happens-on-polling-day.html">What Happens on Polling Day</a></li><li><a href="articles/first-past-the-post-explained.html">First Past the Post Explained</a></li><li><a href="articles/how-a-government-is-formed.html">How a Government Is Formed</a></li><li><a href="articles/devolved-elections-scotland-wales-northern-ireland.html">Devolved Elections</a></li></ol></div>
+      <div class="side-box newsletter"><h3>The weekly Ledger</h3><p style="margin:0;font-size:.95rem;color:var(--ink-soft)">One email a week with our latest explainers and a short list of what is changing in election law.</p><form><input type="email" placeholder="you@example.com" aria-label="Email address" required><button class="btn" type="submit">Subscribe</button></form></div>
+      <div class="side-box" style="margin-top:24px"><h3>Key numbers</h3><ul style="margin:0;padding-left:18px;font-size:.95rem"><li><b>650</b> constituencies</li><li><b>326</b> seats for a majority</li><li><b>7am&ndash;10pm</b> polling hours</li><li><b>5 years</b> maximum Parliament</li></ul></div>
+    </aside>
+  </div>
+</div>
+</main>
+<footer class="foot">
+  <div class="wrap">
+    <div class="cols">
+      <div><div class="brand">The Civic Ledger</div><p>Plain-English guides to British democracy, written for people who want to understand the rules without being told what to think. We are independent and non-partisan.</p></div>
+      <div><h4>Sections</h4><ul><li><a href="./articles/how-a-uk-general-election-works.html">Elections</a></li><li><a href="./articles/constituencies-mps-and-the-house-of-commons.html">Parliament</a></li><li><a href="./articles/what-happens-on-polling-day.html">Voting</a></li><li><a href="./articles/devolved-elections-scotland-wales-northern-ireland.html">Devolution</a></li></ul></div>
+      <div><h4>About</h4><ul><li><a href="./index.html#about">About us</a></li><li><a href="./index.html#about">Editorial standards</a></li><li><a href="./index.html#about">Corrections</a></li><li><a href="./index.html#about">Contact</a></li></ul></div>
+      <div><h4>Legal</h4><ul><li><a href="./index.html#about">Privacy notice</a></li><li><a href="./index.html#about">Cookies</a></li><li><a href="./index.html#about">Terms of use</a></li><li><a href="./index.html#about">Accessibility</a></li></ul></div>
+    </div>
+    <div class="legal"><span>&copy; <span data-year>2026</span> The Civic Ledger. All rights reserved.</span><span>Not affiliated with any political party or public body.</span></div>
+  </div>
+</footer>
+<script src="./assets/js/site.js"></script>
+</body>
 </html>

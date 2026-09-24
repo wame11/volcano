@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" role="img" aria-labelledby="t"><title id="t">Three debating chambers drawn as abstract semicircles for Scotland, Wales and Northern Ireland</title>
+<rect width="1200" height="675" fill="#eef0f3"/>
+<g transform="translate(220 380)">
+<path d="M-170 0 a170 170 0 0 1 340 0 z" fill="#5d7ea3"/><path d="M-120 0 a120 120 0 0 1 240 0 z" fill="#eef0f3"/><path d="M-100 0 a100 100 0 0 1 200 0 z" fill="#9db7d1"/><path d="M-50 0 a50 50 0 0 1 100 0 z" fill="#eef0f3"/>
+<text x="0" y="60" text-anchor="middle" font-family="Georgia, serif" font-size="30" fill="#1f3554" font-weight="700">Holyrood</text><text x="0" y="90" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="16" fill="#5a6a80">129 MSPs · Additional Member System</text>
+</g>
+<g transform="translate(600 380)">
+<path d="M-170 0 a170 170 0 0 1 340 0 z" fill="#8a1c2b"/><path d="M-120 0 a120 120 0 0 1 240 0 z" fill="#eef0f3"/><path d="M-100 0 a100 100 0 0 1 200 0 z" fill="#c98a93"/><path d="M-50 0 a50 50 0 0 1 100 0 z" fill="#eef0f3"/>
+<text x="0" y="60" text-anchor="middle" font-family="Georgia, serif" font-size="30" fill="#1f3554" font-weight="700">Senedd</text><text x="0" y="90" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="16" fill="#5a6a80">96 Members · closed-list PR</text>
+</g>
+<g transform="translate(980 380)">
+<path d="M-170 0 a170 170 0 0 1 340 0 z" fill="#4c6a4f"/><path d="M-120 0 a120 120 0 0 1 240 0 z" fill="#eef0f3"/><path d="M-100 0 a100 100 0 0 1 200 0 z" fill="#9dbb9f"/><path d="M-50 0 a50 50 0 0 1 100 0 z" fill="#eef0f3"/>
+<text x="0" y="60" text-anchor="middle" font-family="Georgia, serif" font-size="30" fill="#1f3554" font-weight="700">Stormont</text><text x="0" y="90" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="16" fill="#5a6a80">90 MLAs · Single Transferable Vote</text>
+</g>
+<text x="600" y="120" text-anchor="middle" font-family="Georgia, serif" font-size="40" fill="#1f3554" font-weight="700">Three chambers, three voting systems</text>
+</svg>
