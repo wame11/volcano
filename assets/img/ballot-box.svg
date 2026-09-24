@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" role="img" aria-labelledby="t"><title id="t">Illustration of a ballot box with a folded ballot paper being posted</title>
+<defs><linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f3efe6"/><stop offset="1" stop-color="#e6e0d2"/></linearGradient></defs>
+<rect width="1200" height="675" fill="url(#bg)"/>
+<circle cx="600" cy="330" r="240" fill="#e2dccb"/>
+<rect x="150" y="560" width="900" height="40" rx="6" fill="#cfc7b2"/>
+<g transform="translate(600 360)">
+<rect x="-190" y="-120" width="380" height="290" rx="16" fill="#1f3554"/>
+<rect x="-190" y="-120" width="380" height="60" rx="16" fill="#27446b"/>
+<rect x="-70" y="-100" width="140" height="18" rx="9" fill="#0f1c2e"/>
+<rect x="-160" y="-30" width="320" height="170" rx="8" fill="#243d60"/>
+<text x="0" y="70" text-anchor="middle" font-family="Georgia, serif" font-size="40" fill="#f3efe6" font-weight="700">BALLOT</text>
+<text x="0" y="110" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="18" fill="#c9d3e3" letter-spacing="4">POLLING STATION</text>
+<g transform="translate(20 -190) rotate(-18)">
+<rect x="-70" y="-45" width="140" height="90" rx="4" fill="#fbfaf6" stroke="#b8b09b" stroke-width="3"/>
+<rect x="-52" y="-25" width="60" height="8" fill="#9aa4b4"/><rect x="-52" y="-5" width="80" height="8" fill="#9aa4b4"/><rect x="-52" y="15" width="50" height="8" fill="#9aa4b4"/>
+<path d="M28 -22 l10 12 l22 -26" fill="none" stroke="#8a1c2b" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+</g></g>
+<g fill="none" stroke="#8a1c2b" stroke-width="6" stroke-linecap="round"><path d="M330 200 q-30 -40 -80 -30"/><path d="M870 200 q30 -40 80 -30"/></g>
+</svg>

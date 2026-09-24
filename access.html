@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Access</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='12' fill='%23222'/%3E%3C/svg%3E">
+<style>
+  :root{color-scheme:dark}
+  *{box-sizing:border-box}
+  html,body{height:100%;margin:0}
+  body{background:radial-gradient(1200px 600px at 50% -10%,#1b1f2a 0%,#0b0d12 60%,#07080b 100%);color:#e6e8ee;font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;display:flex;align-items:center;justify-content:center}
+  .box{width:min(92vw,360px);text-align:center}
+  .mark{width:44px;height:44px;border-radius:12px;margin:0 auto 26px;background:linear-gradient(135deg,#2c3140,#181b24);box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 10px 30px rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center}
+  .mark i{width:14px;height:14px;border:2px solid #9aa3b8;border-radius:50%;display:block}
+  h1{font-size:.8rem;letter-spacing:.28em;text-transform:uppercase;font-weight:600;color:#9aa3b8;margin:0 0 22px}
+  form{display:flex;flex-direction:column;gap:12px}
+  input{width:100%;padding:14px 16px;font:inherit;font-size:1.05rem;letter-spacing:.2em;text-align:center;color:#fff;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.12);border-radius:10px;outline:none;transition:border-color .2s,box-shadow .2s}
+  input:focus{border-color:rgba(160,180,255,.6);box-shadow:0 0 0 4px rgba(120,140,255,.12)}
+  input::placeholder{letter-spacing:.02em;color:#6b7386}
+  button{padding:12px;font:inherit;font-weight:600;color:#c9cfdd;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:10px;cursor:pointer;transition:background .2s,color .2s}
+  button:hover{background:rgba(255,255,255,.12);color:#fff}
+  .msg{min-height:1.4em;font-size:.85rem;color:#ff6b7a;opacity:0;transition:opacity .25s}
+  .msg.show{opacity:1}
+  .shake{animation:shake .45s cubic-bezier(.36,.07,.19,.97)}
+  @keyframes shake{10%,90%{transform:translateX(-1px)}20%,80%{transform:translateX(2px)}30%,50%,70%{transform:translateX(-4px)}40%,60%{transform:translateX(4px)}}
+  .foot{margin-top:40px;font-size:.72rem;color:#4d5468}
+</style>
+</head>
+<body>
+<div class="box" id="box">
+  <div class="mark"><i></i></div>
+  <h1>Restricted</h1>
+  <form id="f" autocomplete="off">
+    <input id="code" type="password" inputmode="numeric" placeholder="Enter access code" aria-label="Enter access code" autofocus>
+    <button type="submit">Continue</button>
+    <div class="msg" id="msg" role="alert"></div>
+  </form>
+  <div class="foot">Authorised users only</div>
+</div>
+<script>
+(function () {
+  // Only the SHA-256 digest of the access code is stored here.
+  var DIGEST = '32a7fa9d08bd739656785444a689b1aa4c71a9da0e8f8a73d0990bb4d1ab1d17';
+  var form = document.getElementById('f'), input = document.getElementById('code'), msg = document.getElementById('msg'), box = document.getElementById('box');
+  async function sha256(text) {
+    var buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
+    return Array.from(new Uint8Array(buf)).map(function (b) { return b.toString(16).padStart(2, '0'); }).join('');
+  }
+  form.addEventListener('submit', async function (ev) {
+    ev.preventDefault();
+    var v = input.value.trim();
+    if (!v) return;
+    var ok = false;
+    try { ok = (await sha256(v)) === DIGEST; } catch (e) { ok = false; }
+    if (ok) {
+      try { sessionStorage.setItem('cl_v', '1'); } catch (e) {}
+      location.replace('x7/core.html');
+    } else {
+      msg.textContent = 'Incorrect code';
+      msg.classList.add('show');
+      box.classList.remove('shake'); void box.offsetWidth; box.classList.add('shake');
+      input.value = ''; input.focus();
+      setTimeout(function () { msg.classList.remove('show'); }, 2200);
+    }
+  });
+})();
+</script>
+</body>
+</html>

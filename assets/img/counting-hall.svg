@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" role="img" aria-labelledby="t"><title id="t">Illustration of a counting hall with long tables and stacks of ballot papers</title>
+<rect width="1200" height="675" fill="#f4f1ea"/>
+<rect x="0" y="0" width="1200" height="300" fill="#e8e2d4"/>
+<g fill="#fbf7ea" opacity=".9"><rect x="120" y="40" width="200" height="60" rx="8"/><rect x="500" y="40" width="200" height="60" rx="8"/><rect x="880" y="40" width="200" height="60" rx="8"/></g>
+<rect x="0" y="300" width="1200" height="375" fill="#d9d2c2"/>
+<g>
+<polygon points="80,420 1120,420 1180,560 20,560" fill="#8a6a4a"/>
+<polygon points="80,420 1120,420 1160,480 40,480" fill="#a07f5c"/>
+<g fill="#fbfaf6" stroke="#cfc7b2" stroke-width="2">
+<rect x="150" y="380" width="120" height="60" rx="3"/><rect x="330" y="380" width="120" height="60" rx="3"/><rect x="510" y="380" width="120" height="60" rx="3"/><rect x="690" y="380" width="120" height="60" rx="3"/><rect x="870" y="380" width="120" height="60" rx="3"/>
+<rect x="160" y="366" width="120" height="60" rx="3"/><rect x="520" y="366" width="120" height="60" rx="3"/><rect x="880" y="366" width="120" height="60" rx="3"/>
+</g>
+<g fill="#1f3554"><rect x="200" y="300" width="60" height="120" rx="20"/><circle cx="230" cy="280" r="26"/></g>
+<g fill="#8a1c2b"><rect x="560" y="300" width="60" height="120" rx="20"/><circle cx="590" cy="280" r="26"/></g>
+<g fill="#4c6a4f"><rect x="920" y="300" width="60" height="120" rx="20"/><circle cx="950" cy="280" r="26"/></g>
+</g>
+<g transform="translate(420 140)"><rect x="0" y="0" width="360" height="110" rx="8" fill="#1f3554"/><text x="180" y="48" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="26" font-weight="700" fill="#f3efe6" letter-spacing="3">VERIFICATION</text><text x="180" y="88" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="20" fill="#c9d3e3">Table 4 · Boxes 61–80</text></g>
+</svg>
