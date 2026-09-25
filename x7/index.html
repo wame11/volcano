@@ -22,6 +22,10 @@ h1{font-family:Rajdhani,system-ui,sans-serif;font-size:56px;line-height:1;margin
 .tools kbd{font-family:inherit;background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:2px 7px;color:#fff}
 .tools a.btn{text-decoration:none;color:var(--text);background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:8px 14px;font-weight:600}
 main{max-width:1180px;margin:0 auto;padding:16px 20px 60px}
+.filters{display:flex;flex-wrap:wrap;gap:8px;margin:4px 0 18px}
+.chip{font:inherit;font-weight:600;font-size:14px;letter-spacing:.5px;color:var(--muted);background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:7px 16px;cursor:pointer}
+.chip:hover{border-color:var(--accent);color:var(--text)}
+.chip.on{background:var(--accent);border-color:var(--accent);color:#06121c}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:18px}
 .card{position:relative;display:block;width:100%;text-align:left;border:1px solid var(--line);background:var(--panel);border-radius:14px;overflow:hidden;cursor:pointer;padding:0;color:inherit;font:inherit;transition:transform .15s,box-shadow .15s,border-color .15s}
 .card:hover,.card:focus-visible{transform:translateY(-3px);border-color:var(--accent);box-shadow:0 14px 40px rgba(0,0,0,.5);outline:none}
@@ -51,10 +55,10 @@ footer h2{font-family:Rajdhani,sans-serif;font-size:18px;letter-spacing:1px;colo
 </head>
 <body>
 <header>
-  <div><h1>RETRO BLAST</h1><div class="tag"><b>14 games</b> · no ads · no downloads · works on phones too</div></div>
+  <div><h1>RETRO BLAST</h1><div class="tag"><b id="count">25 games</b> · no ads · no downloads · racing, action, classics and more</div></div>
   <div class="tools"><span>Boss key: press <kbd>Esc</kbd> three times</span><a class="btn" href="../index.html">Back to the site</a></div>
 </header>
-<main><div class="grid" id="grid"></div></main>
+<main><div class="filters" id="filters"></div><div class="grid" id="grid"></div></main>
 <footer>
   <h2>CREDITS</h2>
   <div id="credits"></div>
@@ -66,25 +70,40 @@ footer h2{font-family:Rajdhani,sans-serif;font-size:18px;letter-spacing:1px;colo
 <script>
 (() => {
 const GAMES = [
-  { slug: 'retro-blast', title: 'Retro Blast', blurb: 'Vertical space shooter. Waves, asteroids, power-ups and a boss-sized score to beat.', tags: ['shooter', 'keys', 'touch'], hot: true, credit: 'Original game for this site.' },
-  { slug: 'block-blast', title: 'Block Blast', blurb: 'Drag pieces onto the 8×8 board and clear full rows and columns. No timer, just planning.', tags: ['puzzle', 'touch', 'mouse'], hot: true, credit: 'Original game for this site.' },
-  { slug: '2048', title: '2048', blurb: 'Slide the tiles, merge the numbers, reach 2048. The classic that ate a million lunch breaks.', tags: ['puzzle', 'keys', 'touch'], credit: '2048 by Gabriele Cirulli, MIT licence.' },
-  { slug: 'hextris', title: 'Hextris', blurb: 'Tetris on a spinning hexagon. Rotate to catch the falling blocks and match colours.', tags: ['arcade', 'keys', 'touch'], credit: 'Hextris by Logan Engstrom, Garrett Finucane, Noah Moroze and Michael Yang, GPL-3.0.' },
-  { slug: 'tetris', title: 'Tetris', blurb: 'The real deal: seven shapes, one goal, ever faster.', tags: ['arcade', 'keys'], credit: 'JavaScript Tetris by Jake Gordon, MIT licence.' },
-  { slug: 'pacman', title: 'Pac-Man', blurb: 'Eat the dots, dodge the ghosts, grab the power pellets and chase them back.', tags: ['arcade', 'keys'], credit: 'HTML5 Pac-Man by Dale Harvey, free licence.' },
-  { slug: 'space-invaders', title: 'Space Invaders', blurb: 'The original alien invasion. Hold the line with three shields and a lot of nerve.', tags: ['arcade', 'keys'], credit: 'Space Invaders by Dave Kerr, MIT licence.' },
-  { slug: 'dino', title: 'Dino Run', blurb: 'The offline dinosaur from Chrome, here whether the internet is down or not.', tags: ['runner', 'keys', 'touch'], credit: 'T-Rex Runner from the Chromium project, BSD licence, extracted by wayou.' },
-  { slug: 'clumsy-bird', title: 'Clumsy Bird', blurb: 'Flap through the pipes. Sounds easy. It is not easy.', tags: ['skill', 'keys', 'touch'], credit: 'Clumsy Bird by Ellison Leão, GPL-3.0.' },
-  { slug: 'astray', title: 'Astray', blurb: 'Roll a ball through a 3D maze that gets bigger every time you escape.', tags: ['3d', 'keys'], credit: 'Astray by Rye Terrell, public domain.' },
-  { slug: 'snake', title: 'Snake', blurb: 'Grow long, stay alive, grab the gold stars. Speeds up as you go.', tags: ['classic', 'keys', 'touch'], credit: 'Original game for this site.' },
-  { slug: 'breakout', title: 'Breakout', blurb: 'Smash every brick across eight levels with power-ups and multiball.', tags: ['classic', 'mouse', 'touch'], credit: 'Original game for this site.' },
-  { slug: 'stack', title: 'Stack Tower', blurb: 'Tap to drop each block dead on the last one. Miss and your tower shrinks.', tags: ['skill', 'touch', 'keys'], credit: 'Original game for this site.' },
-  { slug: 'pong', title: 'Pong', blurb: 'One player against the computer or two players on one keyboard. First to seven.', tags: ['classic', '2 player', 'touch'], credit: 'Original game for this site.' }
+  { slug: 'hexgl', title: 'HexGL', cat: 'racing', blurb: 'Futuristic anti-gravity racer in full 3D. Boost through the tunnels and stay off the walls.', tags: ['racing', '3d', 'keys'], hot: true, credit: 'HexGL by Thibaut Despoulain (BKcore), MIT licence.' },
+  { slug: 'racer', title: 'Racer', cat: 'racing', blurb: 'Arcade road racer in the OutRun style: hills, curves, traffic and a ticking clock.', tags: ['racing', 'keys'], hot: true, credit: 'JavaScript Racer by Jake Gordon, MIT licence.' },
+  { slug: 'highway-404', title: 'Highway 404', cat: 'racing', blurb: 'Weave through traffic on a broken highway and dodge the 404 potholes.', tags: ['racing', 'keys'], hot: true, credit: 'Highway 404 by Jerome Lecomte, MIT licence.' },
+  { slug: 'retro-blast', title: 'Retro Blast', cat: 'action', blurb: 'Vertical space shooter. Waves, asteroids, power-ups and a boss-sized score to beat.', tags: ['shooter', 'keys', 'touch'], credit: 'Original game for this site.' },
+  { slug: 'space-huggers', title: 'Space Huggers', cat: 'action', blurb: 'Run-and-gun through destructible alien worlds. Two players on one keyboard.', tags: ['platformer', 'keys', '2 player'], hot: true, credit: 'Space Huggers by Frank Force, GPL-3.0.' },
+  { slug: 'radius-raid', title: 'Radius Raid', cat: 'action', blurb: 'Space survival with glowing shapes. Blast the waves and grab every power-up.', tags: ['shooter', 'keys', 'mouse'], hot: true, credit: 'Radius Raid by Jack Rugile, MIT licence.' },
+  { slug: 'duck-hunt', title: 'Duck Hunt', cat: 'arcade', blurb: 'Ducks fly up, you shoot them down. The dog laughs when you miss.', tags: ['shooter', 'mouse', 'touch'], hot: true, credit: 'DuckHunt JS by Matt Surabian, MIT licence.' },
+  { slug: 'bombergirl', title: 'Bombergirl', cat: 'arcade', blurb: 'Bomberman-style mayhem: blow up walls, trap the bots, or take on a friend.', tags: ['arcade', 'keys', '2 player'], hot: true, credit: 'HTML5 Bombergirl by Matt Skala, MIT licence.' },
+  { slug: 'pool', title: '8-Ball Pool', cat: 'classic', blurb: 'Proper pool with real ball physics. Beat the computer or a friend.', tags: ['sport', 'mouse'], hot: true, credit: 'Classic Pool Game by Henshmi, MIT licence.' },
+  { slug: 'bounce-back', title: 'Bounce Back', cat: 'action', blurb: 'Throw a boomerang, dodge the mob and fight your way out of the dungeon.', tags: ['arcade', 'keys', 'mouse'], credit: 'Bounce Back by Frank Force, GPL-3.0.' },
+  { slug: 'block-blast', title: 'Block Blast', cat: 'puzzle', blurb: 'Drag pieces onto the 8×8 board and clear full rows and columns. No timer, just planning.', tags: ['puzzle', 'touch', 'mouse'], credit: 'Original game for this site.' },
+  { slug: '2048', title: '2048', cat: 'puzzle', blurb: 'Slide the tiles, merge the numbers, reach 2048. The classic that ate a million lunch breaks.', tags: ['puzzle', 'keys', 'touch'], credit: '2048 by Gabriele Cirulli, MIT licence.' },
+  { slug: 'hextris', title: 'Hextris', cat: 'arcade', blurb: 'Tetris on a spinning hexagon. Rotate to catch the falling blocks and match colours.', tags: ['arcade', 'keys', 'touch'], credit: 'Hextris by Logan Engstrom, Garrett Finucane, Noah Moroze and Michael Yang, GPL-3.0.' },
+  { slug: 'tetris', title: 'Tetris', cat: 'classic', blurb: 'The real deal: seven shapes, one goal, ever faster.', tags: ['arcade', 'keys'], credit: 'JavaScript Tetris by Jake Gordon, MIT licence.' },
+  { slug: 'pacman', title: 'Pac-Man', cat: 'classic', blurb: 'Eat the dots, dodge the ghosts, grab the power pellets and chase them back.', tags: ['arcade', 'keys'], credit: 'HTML5 Pac-Man by Dale Harvey, free licence.' },
+  { slug: 'space-invaders', title: 'Space Invaders', cat: 'classic', blurb: 'The original alien invasion. Hold the line with three shields and a lot of nerve.', tags: ['arcade', 'keys'], credit: 'Space Invaders by Dave Kerr, MIT licence.' },
+  { slug: 'asteroids', title: 'Asteroids', cat: 'classic', blurb: 'The vector classic: spin, thrust and smash big rocks into smaller rocks.', tags: ['classic', 'keys'], credit: 'HTML5 Asteroids by Doug McInnes, MIT licence.' },
+  { slug: 'dino', title: 'Dino Run', cat: 'arcade', blurb: 'The offline dinosaur from Chrome, here whether the internet is down or not.', tags: ['runner', 'keys', 'touch'], credit: 'T-Rex Runner from the Chromium project, BSD licence, extracted by wayou.' },
+  { slug: 'clumsy-bird', title: 'Clumsy Bird', cat: 'arcade', blurb: 'Flap through the pipes. Sounds easy. It is not easy.', tags: ['skill', 'keys', 'touch'], credit: 'Clumsy Bird by Ellison Leão, GPL-3.0.' },
+  { slug: 'astray', title: 'Astray', cat: 'puzzle', blurb: 'Roll a ball through a 3D maze that gets bigger every time you escape.', tags: ['3d', 'keys'], credit: 'Astray by Rye Terrell, public domain.' },
+  { slug: 'snake', title: 'Snake', cat: 'classic', blurb: 'Grow long, stay alive, grab the gold stars. Speeds up as you go.', tags: ['classic', 'keys', 'touch'], credit: 'Original game for this site.' },
+  { slug: 'breakout', title: 'Breakout', cat: 'classic', blurb: 'Smash every brick across eight levels with power-ups and multiball.', tags: ['classic', 'mouse', 'touch'], credit: 'Original game for this site.' },
+  { slug: 'stack', title: 'Stack Tower', cat: 'arcade', blurb: 'Tap to drop each block dead on the last one. Miss and your tower shrinks.', tags: ['skill', 'touch', 'keys'], credit: 'Original game for this site.' },
+  { slug: 'pong', title: 'Pong', cat: 'classic', blurb: 'One player against the computer or two players on one keyboard. First to seven.', tags: ['classic', '2 player', 'touch'], credit: 'Original game for this site.' },
+  { slug: 'a-dark-room', title: 'A Dark Room', cat: 'story', blurb: 'A minimalist text adventure that quietly grows into something much bigger. Stoke the fire.', tags: ['story', 'mouse', 'touch'], credit: 'A Dark Room by Doublespeak Games, MPL-2.0.' }
 ];
+const CATS = [['all', 'All'], ['racing', 'Racing'], ['action', 'Action'], ['arcade', 'Arcade'], ['classic', 'Classics'], ['puzzle', 'Puzzle'], ['story', 'Story']];
+document.getElementById('count').textContent = GAMES.length + ' games';
+const filters = document.getElementById('filters'); let activeCat = 'all';
+for (const [id, label] of CATS) { const b = document.createElement('button'); b.type = 'button'; b.className = 'chip' + (id === 'all' ? ' on' : ''); b.textContent = label; b.dataset.cat = id; b.addEventListener('click', () => { activeCat = id; filters.querySelectorAll('.chip').forEach(c => c.classList.toggle('on', c === b)); document.querySelectorAll('.card').forEach(c => { c.style.display = activeCat === 'all' || c.dataset.cat === activeCat ? '' : 'none'; }); }); filters.appendChild(b); }
 const grid = document.getElementById('grid'), player = document.getElementById('player'), frame = document.getElementById('frame'), ptitle = document.getElementById('ptitle');
 let last = null; try { last = localStorage.getItem('rb_last'); } catch (e) { }
 for (const g of GAMES) {
-  const b = document.createElement('button'); b.className = 'card'; b.type = 'button'; b.dataset.slug = g.slug;
+  const b = document.createElement('button'); b.className = 'card'; b.type = 'button'; b.dataset.slug = g.slug; b.dataset.cat = g.cat;
   const img = document.createElement('img'); img.className = 'thumb'; img.alt = ''; img.loading = 'lazy'; img.src = 'thumbs/' + g.slug + '.jpg';
   img.onerror = () => { const d = document.createElement('div'); d.className = 'thumb fallback'; d.textContent = g.title.toUpperCase(); img.replaceWith(d); };
   b.appendChild(img);
