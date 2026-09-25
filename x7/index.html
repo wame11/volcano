@@ -22,12 +22,22 @@ h1{font-family:Rajdhani,system-ui,sans-serif;font-size:56px;line-height:1;margin
 .tools kbd{font-family:inherit;background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:2px 7px;color:#fff}
 .tools a.btn{text-decoration:none;color:var(--text);background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:8px 14px;font-weight:600}
 main{max-width:1180px;margin:0 auto;padding:16px 20px 60px}
-.filters{display:flex;flex-wrap:wrap;gap:8px;margin:4px 0 18px}
+.bar{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;justify-content:space-between;margin:4px 0 18px}
+.filters{display:flex;flex-wrap:wrap;gap:8px}
+.right{display:flex;gap:8px;align-items:center}
+#search{font:inherit;font-size:15px;color:var(--text);background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:8px 16px;width:200px;outline:none}
+#search:focus{border-color:var(--accent)}
+.btn2{font:inherit;font-weight:600;font-size:14px;color:var(--text);background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:8px 16px;cursor:pointer;white-space:nowrap}
+.btn2:hover{border-color:var(--accent)}
+#empty{display:none;color:var(--muted);padding:40px 0;text-align:center}
+.fav{position:absolute;left:12px;top:12px;font:inherit;font-size:18px;line-height:1;color:#fff;background:rgba(11,15,26,.75);border:1px solid rgba(255,255,255,.15);border-radius:999px;width:34px;height:34px;cursor:pointer;backdrop-filter:blur(4px)}
+.fav.on{color:var(--gold);border-color:rgba(255,209,102,.6)}
+.fav:hover{border-color:var(--gold)}
 .chip{font:inherit;font-weight:600;font-size:14px;letter-spacing:.5px;color:var(--muted);background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:7px 16px;cursor:pointer}
 .chip:hover{border-color:var(--accent);color:var(--text)}
 .chip.on{background:var(--accent);border-color:var(--accent);color:#06121c}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:18px}
-.card{position:relative;display:block;width:100%;text-align:left;border:1px solid var(--line);background:var(--panel);border-radius:14px;overflow:hidden;cursor:pointer;padding:0;color:inherit;font:inherit;transition:transform .15s,box-shadow .15s,border-color .15s}
+.card{position:relative;display:block;width:100%;text-align:left;border:1px solid var(--line);background:var(--panel);border-radius:14px;overflow:hidden;cursor:pointer;padding:0;color:inherit;font:inherit;transition:transform .15s,box-shadow .15s,border-color .15s;user-select:none}
 .card:hover,.card:focus-visible{transform:translateY(-3px);border-color:var(--accent);box-shadow:0 14px 40px rgba(0,0,0,.5);outline:none}
 .thumb{aspect-ratio:16/10;background:linear-gradient(135deg,#1b2a55,#0b0f1a);display:block;width:100%;object-fit:cover}
 .thumb.fallback{display:flex;align-items:center;justify-content:center;font-family:Rajdhani,sans-serif;font-size:34px;letter-spacing:3px;color:#9ee7ff}
@@ -58,7 +68,10 @@ footer h2{font-family:Rajdhani,sans-serif;font-size:18px;letter-spacing:1px;colo
   <div><h1>RETRO BLAST</h1><div class="tag"><b id="count">25 games</b> · no ads · no downloads · racing, action, classics and more</div></div>
   <div class="tools"><span>Boss key: press <kbd>Esc</kbd> three times</span><a class="btn" href="../index.html">Back to the site</a></div>
 </header>
-<main><div class="filters" id="filters"></div><div class="grid" id="grid"></div></main>
+<main>
+  <div class="bar"><div class="filters" id="filters"></div><div class="right"><input id="search" type="search" placeholder="Search games…" aria-label="Search games"><button id="random" type="button" class="btn2">🎲 Surprise me</button></div></div>
+  <div class="grid" id="grid"></div><div id="empty">Nothing matches. Try another word or category.</div>
+</main>
 <footer>
   <h2>CREDITS</h2>
   <div id="credits"></div>
@@ -69,6 +82,12 @@ footer h2{font-family:Rajdhani,sans-serif;font-size:18px;letter-spacing:1px;colo
 </div>
 <script>
 (() => {
+const QUICK = [
+  ['slalom', 1, 'Slalom', 'Hold to turn. Thread the gates, miss the rocks.'], ['twolane', 1, 'Two Lane', 'Tap to change lane, hold to accelerate.'], ['rbdrive', 11, 'RB Drive', 'Tap to change lane on a twisting road.'], ['parking', 1, 'Parking', 'Hold to turn right. Park it clean.'],
+  ['boarding', 1, 'Boarding', 'Hold to board. Jump the gaps.'], ['froooog', 1, 'Froooog', 'Hold to bend, release to jump.'], ['jujump', 1, 'Ju Jump', 'Press to jump. Timing is everything.'], ['pinclimb', 1, 'Pin Climb', 'Hold to stretch from pin to pin.'],
+  ['kite', 1, 'Kite', 'Hold to blow wind and keep the kite up.'], ['survivor', 1, 'Survivor', 'Tap to jump. Outlast everything.'], ['thunder', 1, 'Thunder', 'Tap to turn and strike the invaders.'], ['pakupaku', 11, 'Paku Paku', 'One-dimensional Pac-Man. Tap to turn.'],
+  ['paintball', 11, 'Paint Ball', 'Tap to throw. Cover the board in paint.'], ['chargebeam', 11, 'Charge Beam', 'Tap to shoot, hold to charge a big beam.'], ['meteoplanet', 11, 'Meteo Planet', 'Tap to move. Save the planet from meteors.'], ['cleanrobo', 11, 'Clean Robo', 'Hold to speed up and sweep the floor.']
+];
 const GAMES = [
   { slug: 'hexgl', title: 'HexGL', cat: 'racing', blurb: 'Futuristic anti-gravity racer in full 3D. Boost through the tunnels and stay off the walls.', tags: ['racing', '3d', 'keys'], hot: true, credit: 'HexGL by Thibaut Despoulain (BKcore), MIT licence.' },
   { slug: 'racer', title: 'Racer', cat: 'racing', blurb: 'Arcade road racer in the OutRun style: hills, curves, traffic and a ticking clock.', tags: ['racing', 'keys'], hot: true, credit: 'JavaScript Racer by Jake Gordon, MIT licence.' },
@@ -94,16 +113,26 @@ const GAMES = [
   { slug: 'breakout', title: 'Breakout', cat: 'classic', blurb: 'Smash every brick across eight levels with power-ups and multiball.', tags: ['classic', 'mouse', 'touch'], credit: 'Original game for this site.' },
   { slug: 'stack', title: 'Stack Tower', cat: 'arcade', blurb: 'Tap to drop each block dead on the last one. Miss and your tower shrinks.', tags: ['skill', 'touch', 'keys'], credit: 'Original game for this site.' },
   { slug: 'pong', title: 'Pong', cat: 'classic', blurb: 'One player against the computer or two players on one keyboard. First to seven.', tags: ['classic', '2 player', 'touch'], credit: 'Original game for this site.' },
-  { slug: 'a-dark-room', title: 'A Dark Room', cat: 'story', blurb: 'A minimalist text adventure that quietly grows into something much bigger. Stoke the fire.', tags: ['story', 'mouse', 'touch'], credit: 'A Dark Room by Doublespeak Games, MPL-2.0.' }
+  { slug: 'a-dark-room', title: 'A Dark Room', cat: 'story', blurb: 'A minimalist text adventure that quietly grows into something much bigger. Stoke the fire.', tags: ['story', 'mouse', 'touch'], credit: 'A Dark Room by Doublespeak Games, MPL-2.0.' },
+  { slug: 'gauntlet', title: 'Gauntlet', cat: 'action', blurb: 'Dungeon crawl: grab keys and potions and fight through hordes of monsters.', tags: ['dungeon', 'keys'], hot: true, credit: 'JavaScript Gauntlet by Jake Gordon, MIT licence.' },
+  { slug: 'boulderdash', title: 'Boulder Dash', cat: 'classic', blurb: 'Dig for diamonds, dodge falling rocks and outwit the fireflies. All the original caves.', tags: ['classic', 'keys'], hot: true, credit: 'JavaScript Boulder Dash by Jake Gordon, MIT licence.' },
+  { slug: 'skifree', title: 'SkiFree', cat: 'classic', blurb: 'Ski down the mountain, hit the jumps and outrun the yeti. Nobody outruns the yeti.', tags: ['classic', 'keys', 'mouse', 'touch'], hot: true, credit: 'SkiFree.js by Dan Hough, MIT licence.' },
+  { slug: 'tiny-platformer', title: 'Tiny Platformer', cat: 'arcade', blurb: 'A quick, bouncy platformer. Collect the treasure and avoid the monsters.', tags: ['platformer', 'keys'], credit: 'JavaScript Tiny Platformer by Jake Gordon, MIT licence.' },
+  ...QUICK.map(q => ({ slug: 'quick-' + q[0], url: 'games/quick/index.html?g=' + q[0] + '&v=' + q[1], title: q[2], cat: 'quick', blurb: 'One-button mini game. ' + q[3], tags: ['quick', 'keys', 'touch'], credit: 'By Kenta Cho (ABA Games), MIT licence.' }))
 ];
-const CATS = [['all', 'All'], ['racing', 'Racing'], ['action', 'Action'], ['arcade', 'Arcade'], ['classic', 'Classics'], ['puzzle', 'Puzzle'], ['story', 'Story']];
+const CATS = [['all', 'All'], ['fav', '★ Favourites'], ['racing', 'Racing'], ['action', 'Action'], ['arcade', 'Arcade'], ['classic', 'Classics'], ['puzzle', 'Puzzle'], ['quick', 'Quick Games'], ['story', 'Story']];
 document.getElementById('count').textContent = GAMES.length + ' games';
-const filters = document.getElementById('filters'); let activeCat = 'all';
-for (const [id, label] of CATS) { const b = document.createElement('button'); b.type = 'button'; b.className = 'chip' + (id === 'all' ? ' on' : ''); b.textContent = label; b.dataset.cat = id; b.addEventListener('click', () => { activeCat = id; filters.querySelectorAll('.chip').forEach(c => c.classList.toggle('on', c === b)); document.querySelectorAll('.card').forEach(c => { c.style.display = activeCat === 'all' || c.dataset.cat === activeCat ? '' : 'none'; }); }); filters.appendChild(b); }
+let favs = []; try { favs = JSON.parse(localStorage.getItem('rb_fav') || '[]'); } catch (e) { }
+const saveFavs = () => { try { localStorage.setItem('rb_fav', JSON.stringify(favs)); } catch (e) { } };
+const filters = document.getElementById('filters'), search = document.getElementById('search'); let activeCat = 'all';
+function applyFilter() { const q = search.value.trim().toLowerCase(); let n = 0; document.querySelectorAll('.card').forEach(c => { const g = GAMES.find(x => x.slug === c.dataset.slug); const okCat = activeCat === 'all' || (activeCat === 'fav' ? favs.includes(g.slug) : g.cat === activeCat); const okQ = !q || (g.title + ' ' + g.blurb + ' ' + g.tags.join(' ')).toLowerCase().includes(q); const show = okCat && okQ; c.style.display = show ? '' : 'none'; if (show) n++; }); document.getElementById('empty').style.display = n ? 'none' : 'block'; }
+for (const [id, label] of CATS) { const b = document.createElement('button'); b.type = 'button'; b.className = 'chip' + (id === 'all' ? ' on' : ''); b.textContent = label; b.dataset.cat = id; b.addEventListener('click', () => { activeCat = id; filters.querySelectorAll('.chip').forEach(c => c.classList.toggle('on', c === b)); applyFilter(); }); filters.appendChild(b); }
+search.addEventListener('input', applyFilter);
+document.getElementById('random').addEventListener('click', () => { const vis = [...document.querySelectorAll('.card')].filter(c => c.style.display !== 'none'); const pick = vis.length ? vis : [...document.querySelectorAll('.card')]; const c = pick[Math.floor(Math.random() * pick.length)]; const g = GAMES.find(x => x.slug === c.dataset.slug); if (g) open(g); });
 const grid = document.getElementById('grid'), player = document.getElementById('player'), frame = document.getElementById('frame'), ptitle = document.getElementById('ptitle');
 let last = null; try { last = localStorage.getItem('rb_last'); } catch (e) { }
 for (const g of GAMES) {
-  const b = document.createElement('button'); b.className = 'card'; b.type = 'button'; b.dataset.slug = g.slug; b.dataset.cat = g.cat;
+  const b = document.createElement('div'); b.className = 'card'; b.tabIndex = 0; b.setAttribute('role', 'button'); b.dataset.slug = g.slug; b.dataset.cat = g.cat;
   const img = document.createElement('img'); img.className = 'thumb'; img.alt = ''; img.loading = 'lazy'; img.src = 'thumbs/' + g.slug + '.jpg';
   img.onerror = () => { const d = document.createElement('div'); d.className = 'thumb fallback'; d.textContent = g.title.toUpperCase(); img.replaceWith(d); };
   b.appendChild(img);
@@ -111,12 +140,15 @@ for (const g of GAMES) {
   body.innerHTML = '<div class="title"></div><div class="blurb"></div><div class="meta"></div>'; body.querySelector('.title').textContent = g.title; body.querySelector('.blurb').textContent = g.blurb;
   const meta = body.querySelector('.meta'); if (g.hot) { const s = document.createElement('span'); s.className = 'hot'; s.textContent = 'new'; meta.appendChild(s); } if (last === g.slug) { const s = document.createElement('span'); s.className = 'last'; s.textContent = 'last played'; meta.appendChild(s); } for (const t of g.tags) { const s = document.createElement('span'); s.textContent = t; meta.appendChild(s); }
   b.appendChild(body); const play = document.createElement('span'); play.className = 'play'; play.textContent = 'PLAY ▶'; b.appendChild(play);
-  b.addEventListener('click', () => open(g)); grid.appendChild(b);
+  const fav = document.createElement('button'); fav.type = 'button'; fav.className = 'fav' + (favs.includes(g.slug) ? ' on' : ''); fav.title = 'Favourite'; fav.setAttribute('aria-label', 'Favourite'); fav.textContent = favs.includes(g.slug) ? '★' : '☆';
+  fav.addEventListener('click', e => { e.stopPropagation(); const i = favs.indexOf(g.slug); if (i >= 0) favs.splice(i, 1); else favs.push(g.slug); saveFavs(); fav.classList.toggle('on', i < 0); fav.textContent = i < 0 ? '★' : '☆'; if (activeCat === 'fav') applyFilter(); });
+  b.appendChild(fav);
+  b.addEventListener('click', () => open(g)); b.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(g); } }); grid.appendChild(b);
 }
-document.getElementById('credits').innerHTML = GAMES.filter(g => !g.credit.startsWith('Original')).map(g => '<div><b>' + g.title + '</b> — ' + g.credit + '</div>').join('') + '<div>Retro Blast, Block Blast, Snake, Breakout, Stack Tower and Pong were written for this site. Scores are saved in your browser only.</div>';
+document.getElementById('credits').innerHTML = GAMES.filter(g => !g.credit.startsWith('Original') && g.cat !== 'quick').map(g => '<div><b>' + g.title + '</b> — ' + g.credit + '</div>').join('') + '<div><b>Quick Games</b> — ' + QUICK.map(q => q[2]).join(', ') + ' by Kenta Cho (ABA Games), MIT licence, running on crisp-game-lib.</div><div>Retro Blast, Block Blast, Snake, Breakout, Stack Tower and Pong were written for this site. Scores and favourites are saved in your browser only.</div>';
 let current = null;
 function open(g) {
-  current = g; ptitle.textContent = g.title; player.classList.add('on'); document.body.style.overflow = 'hidden'; frame.src = 'games/' + g.slug + '/index.html';
+  current = g; ptitle.textContent = g.title; player.classList.add('on'); document.body.style.overflow = 'hidden'; frame.src = g.url || ('games/' + g.slug + '/index.html');
   try { localStorage.setItem('rb_last', g.slug); } catch (e) { }
   history.pushState({ game: g.slug }, '', '#' + g.slug);
 }

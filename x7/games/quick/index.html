@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,height=device-height,user-scalable=no,initial-scale=1,maximum-scale=1">
+<meta name="robots" content="noindex">
+<link rel="icon" href="data:,">
+<title>Quick Game</title>
+<style>html,body{margin:0;background:#ddd;overflow:hidden;touch-action:none}</style>
+<script>
+  // Runner for crisp-game-lib mini games (MIT, by Kenta Cho). ?g=<folder>&v=<1|11> picks the game and runtime version.
+  var module = {};
+  var Q = new URLSearchParams(location.search); var GAME = (Q.get('g') || 'slalom').replace(/[^a-z0-9]/g, ''); var V = Q.get('v') === '11' ? 11 : 1;
+  document.title = GAME;
+</script>
+<script src="lib/gcc.js"></script>
+<script src="lib/pixi.min.js"></script>
+<script src="lib/pixi-filters.js"></script>
+<script src="lib/clonedeep.js"></script>
+<script>
+  document.write(V === 11 ? '<script src="lib/sss3.js"><\/script><script src="lib/bundle-11.js"><\/script>' : '<script src="lib/sss.js"><\/script><script src="lib/bundle-1.js"><\/script>');
+  document.write('<script src="' + GAME + '/main.js"><\/script>');
+</script>
+<script>window.addEventListener('load', onLoad);</script>
+</head>
+<body style="background:#ddd"></body>
+</html>
