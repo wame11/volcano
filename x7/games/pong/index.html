@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="robots" content="noindex">
+<link rel="icon" href="data:,">
+<title>Pong</title>
+<style>
+html,body{margin:0;height:100%;background:#0b0f1a;color:#e8ecf5;font-family:"Segoe UI",system-ui,sans-serif;overflow:hidden;touch-action:none;user-select:none;-webkit-user-select:none}
+body{display:flex;align-items:center;justify-content:center}
+canvas{display:block;border-radius:10px;box-shadow:0 0 0 2px #1d2540,0 20px 60px rgba(0,0,0,.6)}
+</style>
+</head>
+<body><canvas id="c"></canvas>
+<script>
+(() => {
+const W = 640, H = 400, PW = 12, PH = 70, WIN = 7;
+const cv = document.getElementById('c'), ctx = cv.getContext('2d'); cv.width = W; cv.height = H;
+function fit() { const s = Math.min(innerWidth / W, innerHeight / H) * 0.98; cv.style.width = W * s + 'px'; cv.style.height = H * s + 'px'; }
+addEventListener('resize', fit); fit();
+let L, R, ball, scoreL, scoreR, state, mode, serveT, trail;
+const keys = {};
+function resetBall(dirX) { ball = { x: W / 2, y: H / 2, vx: 0, vy: 0, r: 7 }; serveT = 1; ball.dir = dirX; trail = []; }
+function reset(m) { mode = m; L = { y: H / 2 }; R = { y: H / 2 }; scoreL = 0; scoreR = 0; state = 'play'; resetBall(Math.random() < 0.5 ? -1 : 1); }
+function serve() { const a = (Math.random() - 0.5) * 1.2; const s = 320; ball.vx = Math.cos(a) * s * ball.dir; ball.vy = Math.sin(a) * s; }
+let ac = null; function beep(f, d, type) { try { if (!ac) ac = new (window.AudioContext || window.webkitAudioContext)(); if (ac.state === 'suspended') ac.resume(); const o = ac.createOscillator(), g = ac.createGain(); o.type = type || 'square'; o.frequency.value = f; g.gain.value = 0.07; g.gain.exponentialRampToValueAtTime(0.0001, ac.currentTime + d); o.connect(g); g.connect(ac.destination); o.start(); o.stop(ac.currentTime + d); } catch (e) { } }
+addEventListener('keydown', e => { keys[e.code] = true; if (['ArrowUp', 'ArrowDown', 'Space'].includes(e.code)) e.preventDefault(); if (state === 'menu') { if (e.code === 'Digit1' || e.code === 'Space' || e.code === 'Enter') reset(1); if (e.code === 'Digit2') reset(2); } else if (state === 'over' && (e.code === 'Space' || e.code === 'Enter')) state = 'menu'; else if (e.code === 'KeyP') { if (state === 'play') state = 'pause'; else if (state === 'pause') state = 'play'; } });
+addEventListener('keyup', e => { keys[e.code] = false; });
+const touches = {};
+function pt(e) { const r = cv.getBoundingClientRect(); return { x: (e.clientX - r.left) / r.width * W, y: (e.clientY - r.top) / r.height * H }; }
+cv.addEventListener('pointerdown', e => { const p = pt(e); if (state === 'menu') { reset(p.y > H * 0.62 ? 2 : 1); return; } if (state === 'over') { state = 'menu'; return; } if (state === 'pause') { state = 'play'; return; } touches[e.pointerId] = p; });
+cv.addEventListener('pointermove', e => { if (!(e.pointerId in touches) && e.pointerType !== 'mouse') return; const p = pt(e); if (e.pointerType === 'mouse' && state === 'play') { L.y = p.y; return; } touches[e.pointerId] = p; if (p.x < W / 2) L.y = p.y; else if (mode === 2) R.y = p.y; });
+cv.addEventListener('pointerup', e => { delete touches[e.pointerId]; }); cv.addEventListener('pointercancel', e => { delete touches[e.pointerId]; });
+function update(dt) {
+  if (state !== 'play') return;
+  const sp = 420; if (keys.KeyW || (mode === 1 && keys.ArrowUp)) L.y -= sp * dt; if (keys.KeyS || (mode === 1 && keys.ArrowDown)) L.y += sp * dt;
+  if (mode === 2) { if (keys.ArrowUp) R.y -= sp * dt; if (keys.ArrowDown) R.y += sp * dt; }
+  else { const target = ball.vx > 0 ? ball.y + (ball.y - R.y) * 0.0 : H / 2; const diff = target - R.y; const maxV = 300 * dt; R.y += Math.max(-maxV, Math.min(maxV, diff * 0.9)); }
+  L.y = Math.max(PH / 2, Math.min(H - PH / 2, L.y)); R.y = Math.max(PH / 2, Math.min(H - PH / 2, R.y));
+  if (serveT > 0) { serveT -= dt; if (serveT <= 0) serve(); return; }
+  trail.push({ x: ball.x, y: ball.y }); if (trail.length > 10) trail.shift();
+  ball.x += ball.vx * dt; ball.y += ball.vy * dt;
+  if (ball.y < ball.r) { ball.y = ball.r; ball.vy = Math.abs(ball.vy); beep(300, .03); } if (ball.y > H - ball.r) { ball.y = H - ball.r; ball.vy = -Math.abs(ball.vy); beep(300, .03); }
+  const hit = (px, py, dir) => { if (Math.abs(ball.y - py) > PH / 2 + ball.r) return false; if (dir < 0 ? (ball.x - ball.r <= px + PW / 2 && ball.x > px) : (ball.x + ball.r >= px - PW / 2 && ball.x < px)) { const k = (ball.y - py) / (PH / 2); const s = Math.min(760, Math.hypot(ball.vx, ball.vy) * 1.06); const a = k * 1.05; ball.vx = Math.cos(a) * s * (dir < 0 ? 1 : -1); ball.vy = Math.sin(a) * s; ball.x = dir < 0 ? px + PW / 2 + ball.r : px - PW / 2 - ball.r; beep(480, .04); return true; } return false; };
+  if (ball.vx < 0) hit(24, L.y, -1); else hit(W - 24, R.y, 1);
+  if (ball.x < -20) { scoreR++; beep(160, .3, 'sawtooth'); if (scoreR >= WIN) state = 'over'; else resetBall(-1); }
+  if (ball.x > W + 20) { scoreL++; beep(160, .3, 'sawtooth'); if (scoreL >= WIN) state = 'over'; else resetBall(1); }
+}
+function draw() {
+  ctx.fillStyle = '#0b0f1a'; ctx.fillRect(0, 0, W, H); ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  if (state === 'menu') { ctx.fillStyle = '#fff'; ctx.font = 'bold 48px system-ui,sans-serif'; ctx.fillText('PONG', W / 2, 90); ctx.font = '18px system-ui,sans-serif'; ctx.fillStyle = '#c9d2e8'; ctx.fillText('First to ' + WIN + ' wins', W / 2, 135);
+    ctx.fillStyle = '#4cc9f0'; ctx.beginPath(); ctx.roundRect(W / 2 - 150, 175, 300, 54, 10); ctx.fill(); ctx.fillStyle = '#0b0f1a'; ctx.font = 'bold 20px system-ui,sans-serif'; ctx.fillText('1  ·  ONE PLAYER vs computer', W / 2, 202);
+    ctx.fillStyle = '#b388ff'; ctx.beginPath(); ctx.roundRect(W / 2 - 150, 250, 300, 54, 10); ctx.fill(); ctx.fillStyle = '#0b0f1a'; ctx.fillText('2  ·  TWO PLAYERS', W / 2, 277);
+    ctx.fillStyle = '#c9d2e8'; ctx.font = '14px system-ui,sans-serif'; ctx.fillText('Left: W/S, mouse or finger  ·  Right: arrow keys or finger on the right half', W / 2, 340); return; }
+  ctx.fillStyle = '#1d2540'; for (let y = 8; y < H; y += 24) ctx.fillRect(W / 2 - 2, y, 4, 12);
+  ctx.fillStyle = '#2a3457'; ctx.font = 'bold 64px system-ui,sans-serif'; ctx.fillText(scoreL, W / 2 - 90, 60); ctx.fillText(scoreR, W / 2 + 90, 60);
+  ctx.fillStyle = '#e8ecf5'; ctx.beginPath(); ctx.roundRect(24 - PW / 2, L.y - PH / 2, PW, PH, 5); ctx.fill(); ctx.beginPath(); ctx.roundRect(W - 24 - PW / 2, R.y - PH / 2, PW, PH, 5); ctx.fill();
+  for (let i = 0; i < trail.length; i++) { ctx.globalAlpha = i / trail.length * 0.35; ctx.fillStyle = '#ffd166'; ctx.beginPath(); ctx.arc(trail[i].x, trail[i].y, ball.r * (0.5 + i / trail.length * 0.5), 0, 7); ctx.fill(); } ctx.globalAlpha = 1;
+  ctx.fillStyle = '#ffd166'; ctx.beginPath(); ctx.arc(ball.x, ball.y, ball.r, 0, 7); ctx.fill();
+  if (state === 'pause') { ctx.fillStyle = 'rgba(5,8,16,.6)'; ctx.fillRect(0, 0, W, H); ctx.fillStyle = '#fff'; ctx.font = 'bold 30px system-ui,sans-serif'; ctx.fillText('PAUSED', W / 2, H / 2); }
+  if (state === 'over') { ctx.fillStyle = 'rgba(5,8,16,.7)'; ctx.fillRect(0, 0, W, H); ctx.fillStyle = '#fff'; ctx.font = 'bold 34px system-ui,sans-serif'; ctx.fillText(scoreL > scoreR ? (mode === 1 ? 'YOU WIN!' : 'LEFT PLAYER WINS!') : (mode === 1 ? 'COMPUTER WINS' : 'RIGHT PLAYER WINS!'), W / 2, H / 2 - 20); ctx.font = '16px system-ui,sans-serif'; ctx.fillStyle = '#c9d2e8'; ctx.fillText(scoreL + ' – ' + scoreR + '   ·   Space / tap for the menu', W / 2, H / 2 + 24); }
+}
+let last = performance.now();
+function loop(now) { requestAnimationFrame(loop); const dt = Math.min(0.033, (now - last) / 1000); last = now; update(dt); draw(); }
+state = 'menu'; L = { y: H / 2 }; R = { y: H / 2 }; resetBall(1); scoreL = scoreR = 0; mode = 1; requestAnimationFrame(loop);
+})();
+</script>
+</body>
+</html>

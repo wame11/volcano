@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="robots" content="noindex">
+<link rel="icon" href="data:,">
+<title>Block Blast</title>
+<style>
+html,body{margin:0;height:100%;background:#0b0f1a;color:#e8ecf5;font-family:"Segoe UI",system-ui,sans-serif;overflow:hidden;touch-action:none;user-select:none;-webkit-user-select:none}
+body{display:flex;align-items:center;justify-content:center}
+canvas{display:block;border-radius:10px;box-shadow:0 0 0 2px #1d2540,0 20px 60px rgba(0,0,0,.6)}
+</style>
+</head>
+<body><canvas id="c"></canvas>
+<script>
+(() => {
+const N = 8, CELL = 46, BX = 26, BY = 78, W = 420, H = 680, TRAY_Y = 500, TRAY_S = 0.55;
+const cv = document.getElementById('c'), ctx = cv.getContext('2d'); cv.width = W; cv.height = H;
+function fit() { const s = Math.min(innerWidth / W, innerHeight / H) * 0.98; cv.style.width = W * s + 'px'; cv.style.height = H * s + 'px'; }
+addEventListener('resize', fit); fit();
+const HI = 'rb_blockblast_hi'; let hi = +localStorage.getItem(HI) || 0;
+const SHAPES = [
+  [[0, 0]], [[0, 0], [1, 0]], [[0, 0], [0, 1]], [[0, 0], [1, 0], [2, 0]], [[0, 0], [0, 1], [0, 2]], [[0, 0], [1, 0], [2, 0], [3, 0]], [[0, 0], [0, 1], [0, 2], [0, 3]], [[0, 0], [1, 0], [2, 0], [3, 0], [4, 0]], [[0, 0], [0, 1], [0, 2], [0, 3], [0, 4]],
+  [[0, 0], [1, 0], [0, 1], [1, 1]], [[0, 0], [1, 0], [2, 0], [0, 1], [1, 1], [2, 1], [0, 2], [1, 2], [2, 2]],
+  [[0, 0], [0, 1], [1, 1]], [[1, 0], [0, 1], [1, 1]], [[0, 0], [1, 0], [0, 1]], [[0, 0], [1, 0], [1, 1]],
+  [[0, 0], [0, 1], [0, 2], [1, 2]], [[1, 0], [1, 1], [1, 2], [0, 2]], [[0, 0], [1, 0], [0, 1], [0, 2]], [[0, 0], [1, 0], [1, 1], [1, 2]],
+  [[0, 0], [1, 0], [2, 0], [1, 1]], [[1, 0], [0, 1], [1, 1], [2, 1]], [[0, 0], [0, 1], [1, 1], [0, 2]], [[1, 0], [0, 1], [1, 1], [1, 2]],
+  [[1, 0], [2, 0], [0, 1], [1, 1]], [[0, 0], [1, 0], [1, 1], [2, 1]], [[0, 0], [0, 1], [1, 1], [1, 2]], [[1, 0], [0, 1], [1, 1], [0, 2]],
+  [[0, 0], [1, 0], [2, 0], [0, 1], [0, 2]], [[0, 0], [1, 0], [2, 0], [2, 1], [2, 2]], [[0, 0], [0, 1], [0, 2], [1, 2], [2, 2]], [[2, 0], [2, 1], [0, 2], [1, 2], [2, 2]],
+  [[0, 0], [1, 0], [0, 1], [1, 1], [0, 2], [1, 2]], [[0, 0], [1, 0], [2, 0], [0, 1], [1, 1], [2, 1]]
+];
+const COLORS = ['#ff5c7a', '#ff9f43', '#ffd166', '#5bd66b', '#4cc9f0', '#b388ff', '#f78fb3', '#48dbfb'];
+let grid, tray, score, state, drag, combo, clearing, pop, best;
+function newPiece() { const cells = SHAPES[Math.floor(Math.random() * SHAPES.length)]; const w = Math.max(...cells.map(c => c[0])) + 1, h = Math.max(...cells.map(c => c[1])) + 1; return { cells, w, h, col: COLORS[Math.floor(Math.random() * COLORS.length)] }; }
+function refill() { tray = [newPiece(), newPiece(), newPiece()]; }
+function reset() { grid = Array.from({ length: N }, () => Array(N).fill(null)); score = 0; combo = 0; state = 'play'; drag = null; clearing = []; pop = []; refill(); }
+function fits(p, gx, gy) { for (const [x, y] of p.cells) { const X = gx + x, Y = gy + y; if (X < 0 || Y < 0 || X >= N || Y >= N || grid[Y][X]) return false; } return true; }
+function anyFits(p) { for (let y = 0; y < N; y++) for (let x = 0; x < N; x++) if (fits(p, x, y)) return true; return false; }
+let ac = null; function beep(f, d, type) { try { if (!ac) ac = new (window.AudioContext || window.webkitAudioContext)(); if (ac.state === 'suspended') ac.resume(); const o = ac.createOscillator(), g = ac.createGain(); o.type = type || 'square'; o.frequency.value = f; g.gain.value = 0.07; g.gain.exponentialRampToValueAtTime(0.0001, ac.currentTime + d); o.connect(g); g.connect(ac.destination); o.start(); o.stop(ac.currentTime + d); } catch (e) { } }
+function place(p, gx, gy) {
+  for (const [x, y] of p.cells) grid[gy + y][gx + x] = p.col; score += p.cells.length; beep(500, .05);
+  const rows = [], cols = []; for (let y = 0; y < N; y++) if (grid[y].every(c => c)) rows.push(y); for (let x = 0; x < N; x++) if (grid.every(r => r[x])) cols.push(x);
+  const lines = rows.length + cols.length;
+  if (lines) { combo++; score += lines * 10 * lines + (combo > 1 ? combo * 10 : 0); for (const y of rows) for (let x = 0; x < N; x++) { pop.push({ x, y, col: grid[y][x], t: 0.35 }); } for (const x of cols) for (let y = 0; y < N; y++) { if (!rows.includes(y)) pop.push({ x, y, col: grid[y][x], t: 0.35 }); } for (const y of rows) grid[y].fill(null); for (const x of cols) for (let y = 0; y < N; y++) grid[y][x] = null; beep(700 + lines * 100, .15); beep(1000 + lines * 100, .2, 'triangle'); }
+  else combo = 0;
+  if (tray.every(t => !t)) refill();
+  if (!tray.some(t => t && anyFits(t))) { state = 'over'; beep(140, .5, 'sawtooth'); if (score > hi) { hi = score; localStorage.setItem(HI, hi); } }
+}
+function pt(e) { const r = cv.getBoundingClientRect(); return { x: (e.clientX - r.left) / r.width * W, y: (e.clientY - r.top) / r.height * H }; }
+function traySlot(i) { return { x: 26 + i * 124 + 62, y: TRAY_Y + 60 }; }
+cv.addEventListener('pointerdown', e => {
+  const p = pt(e); if (state === 'over') { reset(); return; }
+  for (let i = 0; i < 3; i++) { const t = tray[i]; if (!t) continue; const s = traySlot(i); const pw = t.w * CELL * TRAY_S, ph = t.h * CELL * TRAY_S; if (p.x > s.x - pw / 2 - 18 && p.x < s.x + pw / 2 + 18 && p.y > s.y - ph / 2 - 18 && p.y < s.y + ph / 2 + 18) { drag = { i, p: t, x: p.x, y: p.y, touch: e.pointerType !== 'mouse' }; cv.setPointerCapture(e.pointerId); beep(400, .03); return; } }
+});
+cv.addEventListener('pointermove', e => { if (!drag) return; const p = pt(e); drag.x = p.x; drag.y = p.y; });
+function dragOrigin() { const lift = drag.touch ? 70 : 0; const px = drag.x - drag.p.w * CELL / 2, py = drag.y - lift - drag.p.h * CELL / 2; return { px, py, gx: Math.round((px - BX) / CELL), gy: Math.round((py - BY) / CELL) }; }
+const drop = e => { if (!drag) return; const o = dragOrigin(); if (fits(drag.p, o.gx, o.gy)) { tray[drag.i] = null; place(drag.p, o.gx, o.gy); } drag = null; };
+cv.addEventListener('pointerup', drop); cv.addEventListener('pointercancel', () => { drag = null; });
+addEventListener('keydown', e => { if ((e.code === 'Space' || e.code === 'Enter') && state === 'over') reset(); });
+function cell(x, y, col, s, alpha) { const k = s || CELL; ctx.globalAlpha = alpha === undefined ? 1 : alpha; ctx.fillStyle = col; ctx.beginPath(); ctx.roundRect(x + 2, y + 2, k - 4, k - 4, 6); ctx.fill(); ctx.fillStyle = 'rgba(255,255,255,.28)'; ctx.beginPath(); ctx.roundRect(x + 5, y + 5, k - 10, (k - 10) * 0.4, 4); ctx.fill(); ctx.globalAlpha = 1; }
+function draw(dt) {
+  ctx.fillStyle = '#0b0f1a'; ctx.fillRect(0, 0, W, H);
+  ctx.textBaseline = 'middle'; ctx.textAlign = 'left'; ctx.fillStyle = '#b388ff'; ctx.font = 'bold 22px system-ui,sans-serif'; ctx.fillText('BLOCK BLAST', BX, 40); ctx.textAlign = 'right'; ctx.fillStyle = '#fff'; ctx.fillText(score, W - BX, 34); ctx.font = '13px system-ui,sans-serif'; ctx.fillStyle = '#ffd166'; ctx.fillText('BEST ' + hi, W - BX, 56);
+  ctx.fillStyle = '#121a2e'; ctx.beginPath(); ctx.roundRect(BX - 6, BY - 6, N * CELL + 12, N * CELL + 12, 12); ctx.fill();
+  for (let y = 0; y < N; y++) for (let x = 0; x < N; x++) { ctx.fillStyle = '#1a2440'; ctx.beginPath(); ctx.roundRect(BX + x * CELL + 2, BY + y * CELL + 2, CELL - 4, CELL - 4, 6); ctx.fill(); if (grid[y][x]) cell(BX + x * CELL, BY + y * CELL, grid[y][x]); }
+  for (let i = pop.length - 1; i >= 0; i--) { const q = pop[i]; q.t -= dt; if (q.t <= 0) { pop.splice(i, 1); continue; } const k = q.t / 0.35; ctx.save(); ctx.translate(BX + q.x * CELL + CELL / 2, BY + q.y * CELL + CELL / 2); ctx.scale(k, k); cell(-CELL / 2, -CELL / 2, q.col, CELL, k); ctx.restore(); }
+  if (drag) { const o = dragOrigin(); const ok = fits(drag.p, o.gx, o.gy); if (ok) for (const [x, y] of drag.p.cells) cell(BX + (o.gx + x) * CELL, BY + (o.gy + y) * CELL, drag.p.col, CELL, 0.35); }
+  ctx.fillStyle = '#121a2e'; ctx.beginPath(); ctx.roundRect(BX - 6, TRAY_Y, N * CELL + 12, 132, 12); ctx.fill();
+  for (let i = 0; i < 3; i++) { const t = tray[i]; if (!t || (drag && drag.i === i)) continue; const s = traySlot(i); const k = CELL * TRAY_S; const ox = s.x - t.w * k / 2, oy = s.y - t.h * k / 2; for (const [x, y] of t.cells) cell(ox + x * k, oy + y * k, t.col, k); }
+  if (drag) { const o = dragOrigin(); for (const [x, y] of drag.p.cells) cell(o.px + x * CELL, o.py + y * CELL, drag.p.col, CELL, 0.95); }
+  ctx.textAlign = 'center'; ctx.fillStyle = '#6f7a99'; ctx.font = '13px system-ui,sans-serif'; ctx.fillText('Drag a piece onto the board · fill a full row or column to clear it', W / 2, H - 22);
+  if (state === 'over') { ctx.fillStyle = 'rgba(5,8,16,.72)'; ctx.fillRect(0, 0, W, H); ctx.fillStyle = '#ff5c7a'; ctx.font = 'bold 34px system-ui,sans-serif'; ctx.fillText('NO MOVES LEFT', W / 2, H / 2 - 30); ctx.fillStyle = '#fff'; ctx.font = '18px system-ui,sans-serif'; ctx.fillText('Score ' + score + (score >= hi && score > 0 ? '  ·  New best!' : '  ·  Best ' + hi), W / 2, H / 2 + 12); ctx.fillStyle = '#c9d2e8'; ctx.font = '15px system-ui,sans-serif'; ctx.fillText('Tap or press Space to play again', W / 2, H / 2 + 46); }
+}
+let last = performance.now();
+function loop(now) { requestAnimationFrame(loop); const dt = Math.min(0.033, (now - last) / 1000); last = now; draw(dt); }
+reset(); requestAnimationFrame(loop);
+})();
+</script>
+</body>
+</html>

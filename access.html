@@ -56,7 +56,7 @@
     try { ok = (await sha256(v)) === DIGEST; } catch (e) { ok = false; }
     if (ok) {
       try { sessionStorage.setItem('cl_v', '1'); } catch (e) {}
-      location.replace('x7/core.html');
+      location.replace('x7/index.html');
     } else {
       msg.textContent = 'Incorrect code';
       msg.classList.add('show');

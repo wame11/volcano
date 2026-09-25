@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Retro Blast</title>
+<script>if(sessionStorage.getItem('cl_v')!=='1')location.replace('../index.html');</script>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230b0f1a'/%3E%3Ccircle cx='16' cy='16' r='9' fill='none' stroke='%234cc9f0' stroke-width='3'/%3E%3Ccircle cx='16' cy='16' r='3' fill='%23ff5c7a'/%3E%3C/svg%3E">
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0b0f1a;--panel:#121a2e;--line:#1d2540;--text:#e8ecf5;--muted:#9aa4bf;--accent:#4cc9f0;--pink:#ff5c7a;--gold:#ffd166}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--text);font-family:Barlow,"Segoe UI",system-ui,sans-serif}
+body{min-height:100vh;background:radial-gradient(1200px 500px at 50% -100px,#1b2a55 0%,var(--bg) 60%)}
+a{color:var(--accent)}
+header{max-width:1180px;margin:0 auto;padding:34px 20px 10px;display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:14px}
+h1{font-family:Rajdhani,system-ui,sans-serif;font-size:56px;line-height:1;margin:0;letter-spacing:4px;background:linear-gradient(180deg,#fff 0%,#9ee7ff 55%,#4cc9f0 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;filter:drop-shadow(0 0 18px rgba(76,201,240,.35))}
+.tag{color:var(--muted);font-size:15px;margin-top:6px}
+.tag b{color:var(--gold);font-weight:600}
+.tools{display:flex;gap:10px;align-items:center;font-size:14px;color:var(--muted)}
+.tools kbd{font-family:inherit;background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:2px 7px;color:#fff}
+.tools a.btn{text-decoration:none;color:var(--text);background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:8px 14px;font-weight:600}
+main{max-width:1180px;margin:0 auto;padding:16px 20px 60px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:18px}
+.card{position:relative;display:block;width:100%;text-align:left;border:1px solid var(--line);background:var(--panel);border-radius:14px;overflow:hidden;cursor:pointer;padding:0;color:inherit;font:inherit;transition:transform .15s,box-shadow .15s,border-color .15s}
+.card:hover,.card:focus-visible{transform:translateY(-3px);border-color:var(--accent);box-shadow:0 14px 40px rgba(0,0,0,.5);outline:none}
+.thumb{aspect-ratio:16/10;background:linear-gradient(135deg,#1b2a55,#0b0f1a);display:block;width:100%;object-fit:cover}
+.thumb.fallback{display:flex;align-items:center;justify-content:center;font-family:Rajdhani,sans-serif;font-size:34px;letter-spacing:3px;color:#9ee7ff}
+.body{padding:12px 14px 14px}
+.title{font-family:Rajdhani,system-ui,sans-serif;font-weight:700;font-size:22px;letter-spacing:1px}
+.blurb{color:var(--muted);font-size:14px;margin-top:2px;line-height:1.35}
+.meta{display:flex;gap:6px;flex-wrap:wrap;margin-top:9px}
+.meta span{font-size:11.5px;letter-spacing:.5px;text-transform:uppercase;border:1px solid var(--line);border-radius:999px;padding:2px 8px;color:var(--muted)}
+.meta span.hot{color:var(--pink);border-color:rgba(255,92,122,.45)}
+.meta span.last{color:var(--gold);border-color:rgba(255,209,102,.45)}
+.play{position:absolute;right:12px;top:12px;background:rgba(11,15,26,.75);border:1px solid rgba(255,255,255,.15);border-radius:999px;padding:5px 11px;font-size:12px;font-weight:600;letter-spacing:1px;backdrop-filter:blur(4px)}
+footer{max-width:1180px;margin:0 auto;padding:10px 20px 40px;color:var(--muted);font-size:13px;line-height:1.6}
+footer h2{font-family:Rajdhani,sans-serif;font-size:18px;letter-spacing:1px;color:var(--text);margin:0 0 6px}
+/* player */
+#player{position:fixed;inset:0;background:#000;display:none;flex-direction:column;z-index:20}
+#player.on{display:flex}
+#bar{height:46px;display:flex;align-items:center;gap:10px;padding:0 10px;background:#0b0f1a;border-bottom:1px solid var(--line);flex:none}
+#bar button{font:inherit;font-weight:600;font-size:14px;color:var(--text);background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:7px 12px;cursor:pointer}
+#bar button:hover{border-color:var(--accent)}
+#bar .t{font-family:Rajdhani,sans-serif;font-weight:700;font-size:20px;letter-spacing:1px;flex:1;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#bar .hint{color:var(--muted);font-size:12px}
+#frame{flex:1;width:100%;border:0;background:#000}
+@media (max-width:600px){h1{font-size:40px}#bar .hint{display:none}.grid{grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px}.title{font-size:18px}.blurb{display:none}}
+</style>
+</head>
+<body>
+<header>
+  <div><h1>RETRO BLAST</h1><div class="tag"><b>14 games</b> · no ads · no downloads · works on phones too</div></div>
+  <div class="tools"><span>Boss key: press <kbd>Esc</kbd> three times</span><a class="btn" href="../index.html">Back to the site</a></div>
+</header>
+<main><div class="grid" id="grid"></div></main>
+<footer>
+  <h2>CREDITS</h2>
+  <div id="credits"></div>
+</footer>
+<div id="player" role="dialog" aria-label="Game player">
+  <div id="bar"><button id="back">◀ Games</button><div class="t" id="ptitle"></div><span class="hint">Esc ×3 = boss key</span><button id="full">⛶ Fullscreen</button><button id="close">✕</button></div>
+  <iframe id="frame" allow="fullscreen; autoplay" title="Game"></iframe>
+</div>
+<script>
+(() => {
+const GAMES = [
+  { slug: 'retro-blast', title: 'Retro Blast', blurb: 'Vertical space shooter. Waves, asteroids, power-ups and a boss-sized score to beat.', tags: ['shooter', 'keys', 'touch'], hot: true, credit: 'Original game for this site.' },
+  { slug: 'block-blast', title: 'Block Blast', blurb: 'Drag pieces onto the 8×8 board and clear full rows and columns. No timer, just planning.', tags: ['puzzle', 'touch', 'mouse'], hot: true, credit: 'Original game for this site.' },
+  { slug: '2048', title: '2048', blurb: 'Slide the tiles, merge the numbers, reach 2048. The classic that ate a million lunch breaks.', tags: ['puzzle', 'keys', 'touch'], credit: '2048 by Gabriele Cirulli, MIT licence.' },
+  { slug: 'hextris', title: 'Hextris', blurb: 'Tetris on a spinning hexagon. Rotate to catch the falling blocks and match colours.', tags: ['arcade', 'keys', 'touch'], credit: 'Hextris by Logan Engstrom, Garrett Finucane, Noah Moroze and Michael Yang, GPL-3.0.' },
+  { slug: 'tetris', title: 'Tetris', blurb: 'The real deal: seven shapes, one goal, ever faster.', tags: ['arcade', 'keys'], credit: 'JavaScript Tetris by Jake Gordon, MIT licence.' },
+  { slug: 'pacman', title: 'Pac-Man', blurb: 'Eat the dots, dodge the ghosts, grab the power pellets and chase them back.', tags: ['arcade', 'keys'], credit: 'HTML5 Pac-Man by Dale Harvey, free licence.' },
+  { slug: 'space-invaders', title: 'Space Invaders', blurb: 'The original alien invasion. Hold the line with three shields and a lot of nerve.', tags: ['arcade', 'keys'], credit: 'Space Invaders by Dave Kerr, MIT licence.' },
+  { slug: 'dino', title: 'Dino Run', blurb: 'The offline dinosaur from Chrome, here whether the internet is down or not.', tags: ['runner', 'keys', 'touch'], credit: 'T-Rex Runner from the Chromium project, BSD licence, extracted by wayou.' },
+  { slug: 'clumsy-bird', title: 'Clumsy Bird', blurb: 'Flap through the pipes. Sounds easy. It is not easy.', tags: ['skill', 'keys', 'touch'], credit: 'Clumsy Bird by Ellison Leão, GPL-3.0.' },
+  { slug: 'astray', title: 'Astray', blurb: 'Roll a ball through a 3D maze that gets bigger every time you escape.', tags: ['3d', 'keys'], credit: 'Astray by Rye Terrell, public domain.' },
+  { slug: 'snake', title: 'Snake', blurb: 'Grow long, stay alive, grab the gold stars. Speeds up as you go.', tags: ['classic', 'keys', 'touch'], credit: 'Original game for this site.' },
+  { slug: 'breakout', title: 'Breakout', blurb: 'Smash every brick across eight levels with power-ups and multiball.', tags: ['classic', 'mouse', 'touch'], credit: 'Original game for this site.' },
+  { slug: 'stack', title: 'Stack Tower', blurb: 'Tap to drop each block dead on the last one. Miss and your tower shrinks.', tags: ['skill', 'touch', 'keys'], credit: 'Original game for this site.' },
+  { slug: 'pong', title: 'Pong', blurb: 'One player against the computer or two players on one keyboard. First to seven.', tags: ['classic', '2 player', 'touch'], credit: 'Original game for this site.' }
+];
+const grid = document.getElementById('grid'), player = document.getElementById('player'), frame = document.getElementById('frame'), ptitle = document.getElementById('ptitle');
+let last = null; try { last = localStorage.getItem('rb_last'); } catch (e) { }
+for (const g of GAMES) {
+  const b = document.createElement('button'); b.className = 'card'; b.type = 'button'; b.dataset.slug = g.slug;
+  const img = document.createElement('img'); img.className = 'thumb'; img.alt = ''; img.loading = 'lazy'; img.src = 'thumbs/' + g.slug + '.jpg';
+  img.onerror = () => { const d = document.createElement('div'); d.className = 'thumb fallback'; d.textContent = g.title.toUpperCase(); img.replaceWith(d); };
+  b.appendChild(img);
+  const body = document.createElement('div'); body.className = 'body';
+  body.innerHTML = '<div class="title"></div><div class="blurb"></div><div class="meta"></div>'; body.querySelector('.title').textContent = g.title; body.querySelector('.blurb').textContent = g.blurb;
+  const meta = body.querySelector('.meta'); if (g.hot) { const s = document.createElement('span'); s.className = 'hot'; s.textContent = 'new'; meta.appendChild(s); } if (last === g.slug) { const s = document.createElement('span'); s.className = 'last'; s.textContent = 'last played'; meta.appendChild(s); } for (const t of g.tags) { const s = document.createElement('span'); s.textContent = t; meta.appendChild(s); }
+  b.appendChild(body); const play = document.createElement('span'); play.className = 'play'; play.textContent = 'PLAY ▶'; b.appendChild(play);
+  b.addEventListener('click', () => open(g)); grid.appendChild(b);
+}
+document.getElementById('credits').innerHTML = GAMES.filter(g => !g.credit.startsWith('Original')).map(g => '<div><b>' + g.title + '</b> — ' + g.credit + '</div>').join('') + '<div>Retro Blast, Block Blast, Snake, Breakout, Stack Tower and Pong were written for this site. Scores are saved in your browser only.</div>';
+let current = null;
+function open(g) {
+  current = g; ptitle.textContent = g.title; player.classList.add('on'); document.body.style.overflow = 'hidden'; frame.src = 'games/' + g.slug + '/index.html';
+  try { localStorage.setItem('rb_last', g.slug); } catch (e) { }
+  history.pushState({ game: g.slug }, '', '#' + g.slug);
+}
+function close() { current = null; player.classList.remove('on'); document.body.style.overflow = ''; frame.src = 'about:blank'; if (document.fullscreenElement) document.exitFullscreen().catch(() => { }); if (location.hash) history.replaceState(null, '', location.pathname); }
+frame.addEventListener('load', () => { try { const w = frame.contentWindow; if (w && w.location.href !== 'about:blank') { w.focus(); w.addEventListener('keydown', onKey, true); } } catch (e) { } });
+document.getElementById('back').addEventListener('click', close); document.getElementById('close').addEventListener('click', close);
+document.getElementById('full').addEventListener('click', () => { if (document.fullscreenElement) document.exitFullscreen(); else player.requestFullscreen().catch(() => { }); try { frame.contentWindow.focus(); } catch (e) { } });
+addEventListener('popstate', () => { if (current && !location.hash) close(); });
+// Boss key: three Escapes within 1.5 s goes back to the articles.
+const esc = []; function onKey(e) { if (e.key !== 'Escape') return; const now = Date.now(); esc.push(now); while (esc.length && now - esc[0] > 1500) esc.shift(); if (esc.length >= 3) { esc.length = 0; location.replace('../index.html'); } }
+addEventListener('keydown', onKey, true);
+// Deep link (#slug) reopens a game.
+const h = location.hash.slice(1); const g0 = GAMES.find(g => g.slug === h); if (g0) open(g0);
+})();
+</script>
+</body>
+</html>
