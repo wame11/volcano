@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="robots" content="noindex">
+<link rel="icon" href="data:,">
+<title>Snake</title>
+<style>
+html,body{margin:0;height:100%;background:#0b0f1a;color:#e8ecf5;font-family:"Segoe UI",system-ui,sans-serif;overflow:hidden;touch-action:none;user-select:none;-webkit-user-select:none}
+body{display:flex;align-items:center;justify-content:center}
+canvas{display:block;border-radius:10px;box-shadow:0 0 0 2px #1d2540,0 20px 60px rgba(0,0,0,.6)}
+</style>
+</head>
+<body><canvas id="c"></canvas>
+<script>
+(() => {
+const COLS = 24, ROWS = 18, CELL = 26, TOP = 46, W = COLS * CELL, H = ROWS * CELL + TOP;
+const cv = document.getElementById('c'), ctx = cv.getContext('2d'); cv.width = W; cv.height = H;
+function fit() { const s = Math.min(innerWidth / W, innerHeight / H) * 0.98; cv.style.width = W * s + 'px'; cv.style.height = H * s + 'px'; }
+addEventListener('resize', fit); fit();
+const HI = 'rb_snake_hi'; let hi = +localStorage.getItem(HI) || 0;
+let snake, dir, nextDir, food, bonus, bonusT, score, state, speed, acc, deathT;
+const rnd = n => Math.floor(Math.random() * n);
+const onSnake = (x, y, body) => (body || snake).some(s => s.x === x && s.y === y);
+function reset() { snake = [{ x: 12, y: 9 }, { x: 11, y: 9 }, { x: 10, y: 9 }]; dir = { x: 1, y: 0 }; nextDir = dir; score = 0; speed = 7; acc = 0; bonus = null; bonusT = 0; placeFood(); state = 'ready'; }
+function placeFood() { do { food = { x: rnd(COLS), y: rnd(ROWS) }; } while (onSnake(food.x, food.y) || (bonus && bonus.x === food.x && bonus.y === food.y)); }
+function setDir(x, y) { if (state === 'over') return; if (snake.length > 1 && x === -dir.x && y === -dir.y) return; nextDir = { x, y }; if (state === 'ready') { state = 'play'; beep(520, .06); } }
+function step() {
+  dir = nextDir; const h = { x: snake[0].x + dir.x, y: snake[0].y + dir.y };
+  if (h.x < 0 || h.y < 0 || h.x >= COLS || h.y >= ROWS || onSnake(h.x, h.y, snake.slice(0, -1))) return die();
+  snake.unshift(h);
+  if (h.x === food.x && h.y === food.y) { score += 10; beep(660, .07); placeFood(); if (snake.length % 5 === 0) speed = Math.min(17, speed + 1); if (!bonus && Math.random() < 0.3) { do { bonus = { x: rnd(COLS), y: rnd(ROWS) }; } while (onSnake(bonus.x, bonus.y) || (bonus.x === food.x && bonus.y === food.y)); bonusT = 7; } }
+  else if (bonus && h.x === bonus.x && h.y === bonus.y) { score += 50; bonus = null; beep(880, .12); }
+  else snake.pop();
+}
+function die() { state = 'over'; deathT = 0; beep(140, .35, 'sawtooth'); if (score > hi) { hi = score; localStorage.setItem(HI, hi); } }
+// --- audio ---
+let ac = null; function beep(f, d, type) { try { if (!ac) ac = new (window.AudioContext || window.webkitAudioContext)(); if (ac.state === 'suspended') ac.resume(); const o = ac.createOscillator(), g = ac.createGain(); o.type = type || 'square'; o.frequency.value = f; g.gain.value = 0.08; g.gain.exponentialRampToValueAtTime(0.0001, ac.currentTime + d); o.connect(g); g.connect(ac.destination); o.start(); o.stop(ac.currentTime + d); } catch (e) { } }
+// --- input ---
+addEventListener('keydown', e => {
+  const k = e.code; if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Space'].includes(k)) e.preventDefault();
+  if (k === 'ArrowUp' || k === 'KeyW') setDir(0, -1); else if (k === 'ArrowDown' || k === 'KeyS') setDir(0, 1); else if (k === 'ArrowLeft' || k === 'KeyA') setDir(-1, 0); else if (k === 'ArrowRight' || k === 'KeyD') setDir(1, 0);
+  else if (k === 'Space' || k === 'Enter') { if (state === 'over') reset(); else if (state === 'ready') { state = 'play'; } else if (state === 'play') state = 'pause'; else if (state === 'pause') state = 'play'; }
+  else if (k === 'KeyP') { if (state === 'play') state = 'pause'; else if (state === 'pause') state = 'play'; }
+});
+let t0 = null;
+cv.addEventListener('pointerdown', e => { t0 = { x: e.clientX, y: e.clientY }; });
+cv.addEventListener('pointerup', e => {
+  if (!t0) return; const dx = e.clientX - t0.x, dy = e.clientY - t0.y; t0 = null;
+  if (Math.hypot(dx, dy) > 18) { if (Math.abs(dx) > Math.abs(dy)) setDir(Math.sign(dx), 0); else setDir(0, Math.sign(dy)); }
+  else { if (state === 'over') reset(); else if (state === 'ready') state = 'play'; else if (state === 'pause') state = 'play'; }
+});
+// --- loop ---
+let last = performance.now();
+function loop(now) {
+  requestAnimationFrame(loop); const dt = Math.min(0.05, (now - last) / 1000); last = now;
+  if (state === 'play') { acc += dt; while (acc > 1 / speed) { acc -= 1 / speed; step(); if (state !== 'play') break; } if (bonus) { bonusT -= dt; if (bonusT <= 0) bonus = null; } }
+  if (state === 'over') deathT += dt;
+  draw(now / 1000);
+}
+function rr(x, y, w, h, r) { ctx.beginPath(); ctx.roundRect(x, y, w, h, r); ctx.fill(); }
+function draw(t) {
+  ctx.fillStyle = '#0b0f1a'; ctx.fillRect(0, 0, W, H);
+  // header
+  ctx.fillStyle = '#121a2e'; ctx.fillRect(0, 0, W, TOP);
+  ctx.fillStyle = '#7dffb3'; ctx.font = 'bold 20px "Segoe UI",system-ui,sans-serif'; ctx.textBaseline = 'middle'; ctx.textAlign = 'left'; ctx.fillText('SNAKE', 14, TOP / 2);
+  ctx.fillStyle = '#e8ecf5'; ctx.textAlign = 'center'; ctx.fillText('SCORE ' + score, W / 2, TOP / 2);
+  ctx.fillStyle = '#ffd166'; ctx.textAlign = 'right'; ctx.fillText('BEST ' + hi, W - 14, TOP / 2);
+  // board
+  ctx.save(); ctx.translate(0, TOP);
+  ctx.fillStyle = '#0e1425'; ctx.fillRect(0, 0, W, ROWS * CELL);
+  ctx.fillStyle = '#111a30'; for (let y = 0; y < ROWS; y++) for (let x = 0; x < COLS; x++) if ((x + y) % 2) ctx.fillRect(x * CELL, y * CELL, CELL, CELL);
+  // food
+  const pulse = 1 + Math.sin(t * 6) * 0.08; ctx.fillStyle = '#ff5c7a'; ctx.beginPath(); ctx.arc(food.x * CELL + CELL / 2, food.y * CELL + CELL / 2, CELL * 0.34 * pulse, 0, 7); ctx.fill();
+  ctx.fillStyle = '#5bd66b'; ctx.fillRect(food.x * CELL + CELL / 2 - 1, food.y * CELL + CELL / 2 - CELL * 0.42, 3, 6);
+  if (bonus) { const k = Math.min(1, bonusT / 7); ctx.fillStyle = '#ffd166'; ctx.save(); ctx.translate(bonus.x * CELL + CELL / 2, bonus.y * CELL + CELL / 2); ctx.rotate(t * 2); const r = CELL * 0.36; ctx.beginPath(); for (let i = 0; i < 10; i++) { const a = i * Math.PI / 5, rr2 = i % 2 ? r * 0.45 : r; ctx.lineTo(Math.cos(a) * rr2, Math.sin(a) * rr2); } ctx.closePath(); ctx.fill(); ctx.restore(); ctx.fillStyle = '#ffd166'; ctx.fillRect(bonus.x * CELL + 3, bonus.y * CELL + CELL - 4, (CELL - 6) * k, 2); }
+  // snake
+  for (let i = snake.length - 1; i >= 0; i--) { const s = snake[i]; const k = i / snake.length; ctx.fillStyle = state === 'over' && Math.floor(deathT * 8) % 2 === 0 ? '#ff5c7a' : i === 0 ? '#b8ffd0' : `hsl(${140 - k * 30},70%,${58 - k * 22}%)`; rr(s.x * CELL + 2, s.y * CELL + 2, CELL - 4, CELL - 4, 6); }
+  { const h = snake[0]; ctx.fillStyle = '#0b0f1a'; const ex = dir.x, ey = dir.y; const cx = h.x * CELL + CELL / 2, cy = h.y * CELL + CELL / 2; const px = -ey, py = ex; for (const s of [-1, 1]) { ctx.beginPath(); ctx.arc(cx + ex * 5 + px * s * 5, cy + ey * 5 + py * s * 5, 2.4, 0, 7); ctx.fill(); } }
+  ctx.restore();
+  // overlays
+  if (state !== 'play') {
+    ctx.fillStyle = 'rgba(5,8,16,.62)'; ctx.fillRect(0, TOP, W, ROWS * CELL); ctx.textAlign = 'center'; ctx.fillStyle = '#fff';
+    const cy = TOP + ROWS * CELL / 2;
+    if (state === 'ready') { ctx.font = 'bold 34px system-ui,sans-serif'; ctx.fillText('SNAKE', W / 2, cy - 30); ctx.font = '16px system-ui,sans-serif'; ctx.fillStyle = '#c9d2e8'; ctx.fillText('Arrow keys / WASD or swipe to move', W / 2, cy + 8); ctx.fillText('Eat the red dots. Gold stars are worth 50.', W / 2, cy + 32); ctx.fillText('Press any direction to start', W / 2, cy + 62); }
+    else if (state === 'pause') { ctx.font = 'bold 30px system-ui,sans-serif'; ctx.fillText('PAUSED', W / 2, cy); ctx.font = '15px system-ui,sans-serif'; ctx.fillStyle = '#c9d2e8'; ctx.fillText('Press P or tap to continue', W / 2, cy + 32); }
+    else if (state === 'over') { ctx.font = 'bold 34px system-ui,sans-serif'; ctx.fillStyle = '#ff5c7a'; ctx.fillText('GAME OVER', W / 2, cy - 24); ctx.fillStyle = '#fff'; ctx.font = '18px system-ui,sans-serif'; ctx.fillText('Score ' + score + (score >= hi && score > 0 ? '  ·  New best!' : '  ·  Best ' + hi), W / 2, cy + 14); ctx.fillStyle = '#c9d2e8'; ctx.font = '15px system-ui,sans-serif'; ctx.fillText('Space / tap to play again', W / 2, cy + 46); }
+  }
+}
+reset(); requestAnimationFrame(loop);
+})();
+</script>
+</body>
+</html>
